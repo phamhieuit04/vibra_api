@@ -10,15 +10,15 @@ return new class extends Migration {
 	 */
 	public function up(): void
 	{
-		Schema::create('users', function (Blueprint $table) {
+		Schema::create('playlists', function (Blueprint $table) {
 			$table->id();
 			$table->string('name');
-			$table->string('email')->unique();
-			$table->string('gender')->nullable();
-			$table->date('birth')->nullable();
-			$table->timestamp('email_verified_at')->nullable();
-			$table->string('password');
-			$table->string('avatar');
+			$table->string('description');
+			$table->foreignId('author_id')->constrained('users', 'id');
+			$table->string('thumbnail');
+			$table->integer('type');
+			$table->integer('total_song');
+			$table->integer('price');
 			$table->timestamps();
 		});
 	}
@@ -28,6 +28,6 @@ return new class extends Migration {
 	 */
 	public function down(): void
 	{
-		Schema::dropIfExists('users');
+		Schema::dropIfExists('playlists');
 	}
 };
