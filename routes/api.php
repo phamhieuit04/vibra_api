@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\DemoController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -21,3 +22,16 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/signup', [AuthController::class, 'signup']);
+
+// Send verify email
+Route::group(['prefix' => 'email'], function () {
+	Route::get('/verify', [AuthController::class, 'sendVerify'])->middleware('auth:sanctum');
+	Route::get('/verify/{id}/{hash}', [AuthController::class, 'verifyHandler'])
+		->middleware('signed')
+		->name('verification.verify');
+});
+
+Route::middleware('auth:sanctum')->group(function () {
+
+	Route::get('/logout', [AuthController::class, 'logout']);
+});
