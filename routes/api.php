@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DemoController;
+use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -32,6 +33,8 @@ Route::group(['prefix' => 'email'], function () {
 });
 
 Route::middleware('auth:sanctum')->group(function () {
-
+	Route::group(['prefix' => 'profile'], function () {
+		Route::get('/show', [UserController::class, 'show']);
+	});
 	Route::get('/logout', [AuthController::class, 'logout']);
 });
