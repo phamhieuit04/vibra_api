@@ -23,6 +23,11 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|Bill newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Bill newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Bill query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Bill whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Bill whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Bill wherePlaylistId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Bill whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Bill whereUserId($value)
  */
 	class Bill extends \Eloquent {}
 }
@@ -39,6 +44,11 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|BillDetail newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|BillDetail newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|BillDetail query()
+ * @method static \Illuminate\Database\Eloquent\Builder|BillDetail whereBillId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|BillDetail whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|BillDetail whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|BillDetail whereSongId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|BillDetail whereUpdatedAt($value)
  */
 	class BillDetail extends \Eloquent {}
 }
@@ -56,8 +66,37 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|Blocked newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Blocked newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Blocked query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Blocked whereArtistId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Blocked whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Blocked whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Blocked whereSongId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Blocked whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Blocked whereUserId($value)
  */
 	class Blocked extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * 
+ *
+ * @property int $id
+ * @property string $name
+ * @property string $description
+ * @property string $thumbnail
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @method static \Illuminate\Database\Eloquent\Builder|Category newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Category newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Category query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Category whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Category whereDescription($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Category whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Category whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Category whereThumbnail($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Category whereUpdatedAt($value)
+ */
+	class Category extends \Eloquent {}
 }
 
 namespace App\Models{
@@ -74,6 +113,13 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|Library newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Library newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Library query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Library whereArtistId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Library whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Library whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Library wherePlaylistId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Library whereSongId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Library whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Library whereUserId($value)
  */
 	class Library extends \Eloquent {}
 }
@@ -95,6 +141,16 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|Playlist newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Playlist newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Playlist query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Playlist whereAuthorId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Playlist whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Playlist whereDescription($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Playlist whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Playlist whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Playlist wherePrice($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Playlist whereThumbnail($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Playlist whereTotalSong($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Playlist whereType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Playlist whereUpdatedAt($value)
  */
 	class Playlist extends \Eloquent {}
 }
@@ -107,6 +163,7 @@ namespace App\Models{
  * @property string $name
  * @property int $author_id
  * @property int|null $playlist_id
+ * @property int|null $category_id
  * @property string $lyrics
  * @property string $thumbnail
  * @property int $total_played
@@ -117,6 +174,18 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|Song newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Song newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Song query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Song whereAuthorId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Song whereCategoryId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Song whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Song whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Song whereLyrics($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Song whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Song wherePlaylistId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Song wherePrice($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Song whereStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Song whereThumbnail($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Song whereTotalPlayed($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Song whereUpdatedAt($value)
  */
 	class Song extends \Eloquent {}
 }
@@ -143,7 +212,17 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|User newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|User newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|User query()
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereAvatar($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereBirth($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereEmail($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereEmailVerifiedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereGender($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User wherePassword($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereUpdatedAt($value)
  */
-	class User extends \Eloquent {}
+	class User extends \Eloquent implements \Illuminate\Contracts\Auth\MustVerifyEmail {}
 }
 

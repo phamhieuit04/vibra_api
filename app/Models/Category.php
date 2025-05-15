@@ -5,18 +5,16 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Bill extends Model
+class Category extends Model
 {
 	use HasFactory;
 
-	protected $table = 'bills';
+	protected $table = 'categories';
 
 	protected $fillable = [
-		'user_id',
-		'playlist_id',
-		'status',
-		'created_at',
-		'updated_at'
+		'name',
+		'description',
+		'thumbnail',
 	];
 
 	protected $cast = [

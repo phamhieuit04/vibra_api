@@ -18,8 +18,8 @@ class BillDetail extends Model
 		'updated_at'
 	];
 
-	protected $casts = [
-		'created_at' => 'datetime',
-		'updated_at' => 'datetime',
+	protected $cast = [
+		'created_at' => 'timestamp',
+		'updated_at' => 'timestamp'
 	];
 }

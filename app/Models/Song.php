@@ -15,6 +15,7 @@ class Song extends Model
 		'name',
 		'author_id',
 		'playlist_id',
+		'category_id',
 		'total_played',
 		'thumbnail',
 		'lyrics',
@@ -24,8 +25,8 @@ class Song extends Model
 		'updated_at'
 	];
 
-	protected $casts = [
-		'created_at' => 'datetime',
-		'updated_at' => 'datetime',
+	protected $cast = [
+		'created_at' => 'timestamp',
+		'updated_at' => 'timestamp'
 	];
 }
