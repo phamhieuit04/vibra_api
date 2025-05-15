@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\ApiResponse;
+use App\Http\Resources\AuthResource;
 use App\Models\User;
 use App\Notifications\VerifyEmail;
 use Illuminate\Auth\Events\Registered;
@@ -23,7 +24,7 @@ class AuthController extends Controller
 			]);
 			$user = Auth::user();
 			$user->token = $user->createToken($user->email)->plainTextToken;
-			return ApiResponse::success($user);
+			return ApiResponse::success(new AuthResource($user));
 		} catch (\Throwable $th) {
 			return ApiResponse::dataNotfound();
 		}
