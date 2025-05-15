@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DemoController;
+use App\Http\Controllers\FirebaseController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -23,6 +24,11 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/signup', [AuthController::class, 'signup']);
+
+// Firebase
+Route::group(['prefix' => 'firebase'], function () {
+	Route::get('/auth', [FirebaseController::class, 'authentication']);
+});
 
 // Send verify email
 Route::group(['prefix' => 'email'], function () {
