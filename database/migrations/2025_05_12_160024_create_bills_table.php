@@ -15,6 +15,7 @@ return new class extends Migration {
 			$table->foreignId('user_id')->constrained('users', 'id');
 			$table->unsignedBigInteger('playlist_id')->nullable();
 			$table->foreign('playlist_id')->references('id')->on('playlists');
+			$table->string('status');
 			$table->timestamps();
 		});
 	}
