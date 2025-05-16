@@ -93,6 +93,26 @@ class HomeController extends Controller
         }
     }
 
+    public function search(Request $request)
+    {
+        $params = $request->all();
+        try {
+
+            $artists = User::where('name', 'LIKE', '%' . $params['search-key'] . '%')->get();
+            $songs = Song::where('name', 'LIKE', '%' . $params['search-key'] . '%')->get();
+            $albums = Playlist::where('name', 'LIKE', '%' . $params['search-key'] . '%')->get();
+            $results = [
+                'artists' => $artists,
+                'songs' => $songs,
+                'albums' => $albums
+            ];
+
+            return ApiResponse::success($results);
+        } catch (\Throwable $th) {
+            return ApiResponse::dataNotfound();
+        }
+    }
+
     /**
      * Update the specified resource in storage.
      */

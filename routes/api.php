@@ -50,6 +50,7 @@ Route::middleware('auth:sanctum')->group(function () {
 		Route::get('/store/{id}', [HomeController::class, 'store']);
 		Route::get('/list-song', [HomeController::class, 'listSong']);
 		Route::get('/list-artist', [HomeController::class, 'listArtist']);
+		Route::get('/search', [HomeController::class, 'search']);
 	});
 	Route::get('/logout', [AuthController::class, 'logout']);
 });
