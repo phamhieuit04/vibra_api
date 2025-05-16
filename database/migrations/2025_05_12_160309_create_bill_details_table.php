@@ -13,8 +13,7 @@ return new class extends Migration {
 		Schema::create('bill_details', function (Blueprint $table) {
 			$table->id();
 			$table->foreignId('bill_id')->constrained('bills', 'id');
-			$table->unsignedBigInteger('song_id')->nullable();
-			$table->foreign('song_id')->references('id')->on('songs');
+			$table->foreignId('song_id')->constrained('songs', 'id');
 			$table->timestamps();
 		});
 	}
