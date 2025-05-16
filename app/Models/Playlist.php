@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Playlist extends Model
 {
@@ -27,4 +28,9 @@ class Playlist extends Model
 		'created_at' => 'timestamp',
 		'updated_at' => 'timestamp'
 	];
+
+	public function author()
+	{
+		return $this->hasOne(User::class, 'author_id', 'id');
+	}
 }

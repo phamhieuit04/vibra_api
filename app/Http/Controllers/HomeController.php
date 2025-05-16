@@ -5,23 +5,52 @@ namespace App\Http\Controllers;
 use App\Helpers\ApiResponse;
 use App\Models\Library;
 use App\Models\Playlist;
-use Exception;
+use App\Models\Song;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
-use Throwable;
+use function Laravel\Prompts\select;
 
 class HomeController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function listAlbum()
     {
         // Get all artists' albums
         try {
             $albums = Playlist::where('type', 1)->get();
             return ApiResponse::success($albums);
+        } catch (\Throwable $th) {
+            return ApiResponse::dataNotfound();
+        }
+    }
+
+    public function listSong()
+    {
+        // Get all songs
+        try {
+            $songs = Song::whereStatus(2)->orderBy('total_played', 'DESC')->get();
+            return ApiResponse::success($songs);
+        } catch (\Throwable $th) {
+            return ApiResponse::dataNotfound();
+        }
+    }
+
+    public function listArtist()
+    {
+        // Get all artists
+        try {
+            $artists = User::with('libraries')
+                ->select('id', 'name', 'avatar', 'gender', 'birth')
+                ->get();
+            foreach ($artists as $artist) {
+                $artist->followers = count($artist->libraries);
+            }
+            $artists = collect($artists)->sortByDesc('followers')->values()->toArray();
+            return ApiResponse::success($artists);
         } catch (\Throwable $th) {
             return ApiResponse::dataNotfound();
         }

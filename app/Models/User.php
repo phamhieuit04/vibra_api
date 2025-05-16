@@ -48,4 +48,9 @@ class User extends Authenticatable implements MustVerifyEmail
 		'email_verified_at' => 'datetime',
 		'password' => 'hashed',
 	];
+
+	public function libraries()
+	{
+		return $this->hasMany(Library::class, 'artist_id', 'id');
+	}
 }

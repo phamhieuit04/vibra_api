@@ -45,9 +45,11 @@ Route::middleware('auth:sanctum')->group(function () {
 	});
 
 	Route::group(['prefix' => 'home'], function () {
-		Route::get('/index', [HomeController::class, 'index']);
+		Route::get('/list-album', [HomeController::class, 'listAlbum']);
 		Route::get('/show/{id}', [HomeController::class, 'show']);
-		Route::post('/store/{id}', [HomeController::class, 'store']);
+		Route::get('/store/{id}', [HomeController::class, 'store']);
+		Route::get('/list-song', [HomeController::class, 'listSong']);
+		Route::get('/list-artist', [HomeController::class, 'listArtist']);
 	});
 	Route::get('/logout', [AuthController::class, 'logout']);
 });
