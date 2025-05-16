@@ -22,6 +22,10 @@ class FirebaseController extends Controller
 			try {
 				$user = User::whereEmail($params['email'])->first();
 				if (!is_null($user)) {
+					if (is_null($user->email_verified_at)) {
+						$user->email_verified_at = Carbon::now();
+						$user->save();
+					}
 					$user->token = $user->createToken($user->email)->plainTextToken;
 					return ApiResponse::success($user);
 				} else {
