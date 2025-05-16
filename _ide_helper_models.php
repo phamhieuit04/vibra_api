@@ -18,6 +18,7 @@ namespace App\Models{
  * @property int $id
  * @property int $user_id
  * @property int|null $playlist_id
+ * @property string $status
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @method static \Illuminate\Database\Eloquent\Builder|Bill newModelQuery()
@@ -26,6 +27,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|Bill whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Bill whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Bill wherePlaylistId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Bill whereStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Bill whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Bill whereUserId($value)
  */
@@ -38,7 +40,7 @@ namespace App\Models{
  *
  * @property int $id
  * @property int $bill_id
- * @property int|null $song_id
+ * @property int $song_id
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @method static \Illuminate\Database\Eloquent\Builder|BillDetail newModelQuery()
@@ -138,6 +140,7 @@ namespace App\Models{
  * @property int $price
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\User|null $author
  * @method static \Illuminate\Database\Eloquent\Builder|Playlist newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Playlist newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Playlist query()
@@ -163,7 +166,7 @@ namespace App\Models{
  * @property string $name
  * @property int $author_id
  * @property int|null $playlist_id
- * @property int|null $category_id
+ * @property int $category_id
  * @property string $lyrics
  * @property string $thumbnail
  * @property int $total_played
@@ -204,6 +207,8 @@ namespace App\Models{
  * @property string $avatar
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Library> $libraries
+ * @property-read int|null $libraries_count
  * @property-read \Illuminate\Notifications\DatabaseNotificationCollection<int, \Illuminate\Notifications\DatabaseNotification> $notifications
  * @property-read int|null $notifications_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \Laravel\Sanctum\PersonalAccessToken> $tokens
