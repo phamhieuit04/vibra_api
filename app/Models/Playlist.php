@@ -31,6 +31,6 @@ class Playlist extends Model
 
 	public function author()
 	{
-		return $this->hasOne(User::class, 'author_id', 'id');
+		return $this->belongsTo(User::class, 'author_id', 'id');
 	}
 }

@@ -29,4 +29,19 @@ class Song extends Model
 		'created_at' => 'timestamp',
 		'updated_at' => 'timestamp'
 	];
+
+	public function author()
+	{
+		return $this->belongsTo(User::class, 'author_id', 'id');
+	}
+
+	public function playlist()
+	{
+		return $this->belongsTo(Playlist::class, 'playlist_id', 'id');
+	}
+
+	public function category()
+	{
+		return $this->belongsTo(Category::class, 'category_id', 'id');
+	}
 }
