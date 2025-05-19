@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ArtistController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DemoController;
 use App\Http\Controllers\FirebaseController;
@@ -68,6 +69,12 @@ Route::middleware('auth:sanctum')->group(function () {
 	Route::group(['prefix' => 'song'], function () {
 		Route::get('/show/{id}', [SongController::class, 'show']);
 		Route::get('/store/{id}', [SongController::class, 'store']);
+	});
+
+	Route::group(['prefix' => 'artist'], function () {
+		Route::get('/show/{id}', [ArtistController::class, 'show']);
+		Route::get('/follow/{id}', [ArtistController::class, 'follow']);
+		Route::get('/block/{id}', [ArtistController::class, 'block']);
 	});
 
 	Route::get('/logout', [AuthController::class, 'logout']);
