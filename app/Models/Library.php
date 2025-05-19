@@ -24,4 +24,19 @@ class Library extends Model
 		'created_at' => 'timestamp',
 		'updated_at' => 'timestamp'
 	];
+
+	public function playlists()
+	{
+		return $this->hasMany(Playlist::class, 'id', 'playlist_id');
+	}
+
+	public function artists()
+	{
+		return $this->hasMany(User::class, 'id', 'artist_id');
+	}
+
+	public function songs()
+	{
+		return $this->hasMany(Song::class, 'id', 'song_id');
+	}
 }

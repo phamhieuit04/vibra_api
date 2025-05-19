@@ -46,14 +46,12 @@ Route::middleware('auth:sanctum')->group(function () {
 	});
 
 	Route::group(['prefix' => 'library'], function () {
-		Route::get('/list-playlist', [LibraryController::class, 'listPlaylist']);
+		Route::get('/index', [LibraryController::class, 'index']);
 		Route::post('/store-playlist', [LibraryController::class, 'storePlaylist']);
-		Route::get('/destroy-playlist/{id}', [LibraryController::class, 'destroyPlaylist']);
 		Route::post('/update-playlist/{id}', [LibraryController::class, 'updatePlaylist']);
-		Route::get('/favorite-songs', [LibraryController::class, 'favoriteSongs']);
+		Route::get('/destroy-playlist/{id}', [LibraryController::class, 'destroyPlaylist']);
 		Route::get('/destroy-favorite-song/{id}', [LibraryController::class, 'destroyFavoriteSong']);
-		Route::get('/favorite-artists', [LibraryController::class, 'favoriteArtists']);
-		Route::get('/destrou-favorite-artist/{id}', [LibraryController::class, 'destroyFavoriteArtist']);
+		Route::get('/destroy-favorite-artist/{id}', [LibraryController::class, 'destroyFavoriteArtist']);
 		Route::get('/search', [LibraryController::class, 'search']);
 	});
 
