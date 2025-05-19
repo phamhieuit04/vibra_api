@@ -112,6 +112,12 @@ namespace App\Models{
  * @property int|null $song_id
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\User> $artists
+ * @property-read int|null $artists_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Playlist> $playlists
+ * @property-read int|null $playlists_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Song> $songs
+ * @property-read int|null $songs_count
  * @method static \Illuminate\Database\Eloquent\Builder|Library newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Library newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Library query()
@@ -132,7 +138,7 @@ namespace App\Models{
  *
  * @property int $id
  * @property string $name
- * @property string $description
+ * @property string|null $description
  * @property int $author_id
  * @property string $thumbnail
  * @property int $type
@@ -140,7 +146,7 @@ namespace App\Models{
  * @property int $price
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\User|null $author
+ * @property-read \App\Models\User $author
  * @method static \Illuminate\Database\Eloquent\Builder|Playlist newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Playlist newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Playlist query()
@@ -174,6 +180,9 @@ namespace App\Models{
  * @property int $price
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\User $author
+ * @property-read \App\Models\Category $category
+ * @property-read \App\Models\Playlist|null $playlist
  * @method static \Illuminate\Database\Eloquent\Builder|Song newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Song newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Song query()
@@ -211,6 +220,8 @@ namespace App\Models{
  * @property-read int|null $libraries_count
  * @property-read \Illuminate\Notifications\DatabaseNotificationCollection<int, \Illuminate\Notifications\DatabaseNotification> $notifications
  * @property-read int|null $notifications_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Playlist> $playlists
+ * @property-read int|null $playlists_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \Laravel\Sanctum\PersonalAccessToken> $tokens
  * @property-read int|null $tokens_count
  * @method static \Database\Factories\UserFactory factory($count = null, $state = [])
