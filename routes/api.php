@@ -6,6 +6,7 @@ use App\Http\Controllers\DemoController;
 use App\Http\Controllers\FirebaseController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LibraryController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SongController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
@@ -75,6 +76,15 @@ Route::middleware('auth:sanctum')->group(function () {
 		Route::get('/show/{id}', [ArtistController::class, 'show']);
 		Route::get('/follow/{id}', [ArtistController::class, 'follow']);
 		Route::get('/block/{id}', [ArtistController::class, 'block']);
+	});
+
+	Route::group(['prefix' => 'profile'], function () {
+		Route::get('/show', [ProfileController::class, 'show']);
+		Route::post('/update', [ProfileController::class, 'update']);
+		Route::get('/index', [ProfileController::class, 'index']);
+		Route::get('/create-album', [ProfileController::class, 'createAlbum']);
+		Route::post('/update-album/{id}', [ProfileController::class, 'updateAlbum']);
+		Route::post('upload-song', [ProfileController::class, 'uploadSong']);
 	});
 
 	Route::get('/logout', [AuthController::class, 'logout']);

@@ -34,8 +34,8 @@ class LibraryController extends Controller
 				->first();
 			Playlist::insert([
 				'name' => 'Playlist của tôi #' . count($user->playlists) + 1,
-				'author_id' => $user()->id,
-				'thumbnail' => $user()->avatar,
+				'author_id' => $user->id,
+				'thumbnail' => $user->avatar,
 				'type' => 2,
 				'total_song' => 0,
 				'price' => 0,
