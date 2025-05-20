@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\ApiResponse;
+use App\Helpers\FileHelper;
 use App\Models\Playlist;
 use App\Models\Song;
 use App\Models\User;
@@ -112,15 +113,16 @@ class ProfileController extends Controller
 	public function uploadSong(Request $request)
 	{
 		$params = $request->all();
-		if ($request->hasFile('file')) {
+		if ($request->hasFile('file') && $request->hasFile('lyric')) {
 			$file = $request->file('file');
-			$file->storeAs('uploads', $file->getClientOriginalName(), ['disk' => 'public-api']);
-			$path = env('APP_URL') . '/uploads/' . $file->getClientOriginalName();
+			$lyric = $request->file('lyric');
+			FileHelper::storeSong($file);
+			FileHelper::storeLyric($lyric);
 			$song = Song::create([
-				'name' => $file->getClientOriginalName(),
+				'name' => FileHelper::getName($file),
 				'author_id' => Auth::user()->id,
 				'category_id' => $params['category-id'],
-				'lyrics' => '/lyrics.txt',
+				'lyrics' => '/' . $lyric->getClientOriginalName(),
 				'thumbnail' => '/default.png',
 				'total_played' => 0,
 				'status' => 1,
@@ -128,8 +130,8 @@ class ProfileController extends Controller
 				'created_at' => Carbon::now(),
 				'updated_at' => Carbon::now()
 			]);
-			$song->songPath = $path;
-			$song->lyricsPath = null;
+			$song->songPath = FileHelper::songPath($song);
+			$song->lyricPath = FileHelper::lyricPath($song);
 			return ApiResponse::success($song);
 		} else {
 			return ApiResponse::dataNotfound();

@@ -44,10 +44,6 @@ Route::group(['prefix' => 'email'], function () {
 });
 
 Route::middleware('auth:sanctum')->group(function () {
-	Route::group(['prefix' => 'profile'], function () {
-		Route::get('/show', [UserController::class, 'show']);
-	});
-
 	Route::group(['prefix' => 'library'], function () {
 		Route::get('/index', [LibraryController::class, 'index']);
 		Route::post('/store-playlist', [LibraryController::class, 'storePlaylist']);
