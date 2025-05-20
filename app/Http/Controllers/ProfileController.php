@@ -114,15 +114,13 @@ class ProfileController extends Controller
 	{
 		$params = $request->all();
 		if ($request->hasFile('file') && $request->hasFile('lyric')) {
-			$file = $request->file('file');
-			$lyric = $request->file('lyric');
-			FileHelper::storeSong($file);
-			FileHelper::storeLyric($lyric);
-			$song = Song::create([
-				'name' => FileHelper::getName($file),
+			FileHelper::storeSong($request->file('file'));
+			FileHelper::storeLyric($request->file('lyric'));
+			Song::insert([
+				'name' => FileHelper::getName($request->file('file')),
 				'author_id' => Auth::user()->id,
 				'category_id' => $params['category-id'],
-				'lyrics' => '/' . $lyric->getClientOriginalName(),
+				'lyrics' => '/' . $request->file('lyric')->getClientOriginalName(),
 				'thumbnail' => '/default.png',
 				'total_played' => 0,
 				'status' => 1,
@@ -130,9 +128,7 @@ class ProfileController extends Controller
 				'created_at' => Carbon::now(),
 				'updated_at' => Carbon::now()
 			]);
-			$song->songPath = FileHelper::songPath($song);
-			$song->lyricPath = FileHelper::lyricPath($song);
-			return ApiResponse::success($song);
+			return ApiResponse::success();
 		} else {
 			return ApiResponse::dataNotfound();
 		}
