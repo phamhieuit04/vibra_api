@@ -55,9 +55,14 @@ class ProfileController extends Controller
 				'name' => isset($params['name']) ? $params['name'] : $user->name,
 				'gender' => isset($params['gender']) ? $params['gender'] : $user->gender,
 				'birth' => isset($params['birth']) ? $params['birth'] : $user->birth,
-				'avatar' => isset($params['avatar']) ? $params['avatar'] : $user->avatar,
 				'updated_at' => Carbon::now()
 			]);
+			if ($request->hasFile('avatar')) {
+				$file = $request->file('avatar');
+				if (FileHelper::store($file, 'avatars')) {
+					$user->avatar = $file->getClientOriginalName();
+				}
+			}
 			$user->save();
 			return ApiResponse::success();
 		} catch (\Throwable $th) {
@@ -113,15 +118,16 @@ class ProfileController extends Controller
 	public function uploadSong(Request $request)
 	{
 		$params = $request->all();
-		if ($request->hasFile('file') && $request->hasFile('lyric')) {
-			FileHelper::storeSong($request->file('file'));
-			FileHelper::storeLyric($request->file('lyric'));
+		if ($request->hasFile('song') && $request->hasFile('lyric') && $request->hasFile('thumbnail')) {
+			FileHelper::store($request->file('song'), 'songs');
+			FileHelper::store($request->file('lyric'), 'lyrics');
+			FileHelper::store($request->file('thumbnail'), 'thumbnails');
 			Song::insert([
-				'name' => FileHelper::getName($request->file('file')),
+				'name' => FileHelper::getFileName($request->file('song')),
 				'author_id' => Auth::user()->id,
 				'category_id' => $params['category-id'],
 				'lyrics' => '/' . $request->file('lyric')->getClientOriginalName(),
-				'thumbnail' => '/default.png',
+				'thumbnail' => $request->file('thumbnail')->getClientOriginalName(),
 				'total_played' => 0,
 				'status' => 1,
 				'price' => 0,
