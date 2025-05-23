@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\ApiResponse;
+use App\Helpers\FileHelper;
 use App\Models\Blocked;
 use App\Models\Library;
 use App\Models\User;
@@ -35,6 +36,7 @@ class ArtistController extends Controller
 	{
 		try {
 			$artist = User::find($id);
+			$artist->avatar_path = FileHelper::getAvatar($artist);
 			return ApiResponse::success($artist);
 		} catch (\Throwable $th) {
 			return ApiResponse::dataNotfound();

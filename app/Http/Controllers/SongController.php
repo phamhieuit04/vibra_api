@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\ApiResponse;
+use App\Helpers\FileHelper;
 use App\Models\Library;
 use App\Models\Song;
 use Illuminate\Http\Request;
@@ -45,6 +46,7 @@ class SongController extends Controller
 		$song = Song::where('id', $id)
 			->with('author', 'playlist', 'category')
 			->first();
+		FileHelper::getSongUrl($song);
 		return ApiResponse::success($song);
 	}
 

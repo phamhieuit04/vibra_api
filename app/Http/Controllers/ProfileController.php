@@ -18,7 +18,10 @@ class ProfileController extends Controller
 	 */
 	public function index()
 	{
-		$albums = Playlist::where('author_id', Auth::user()->id)->get();
+		$albums = Playlist::where('author_id', Auth::user()->id)
+			->with('author')
+			->get();
+		FileHelper::getPlaylistsUrl($albums);
 		return ApiResponse::success($albums);
 	}
 
@@ -37,6 +40,7 @@ class ProfileController extends Controller
 	{
 		try {
 			$profile = User::find(Auth::user()->id);
+			$profile->avatar_path = FileHelper::getAvatar();
 			return ApiResponse::success($profile);
 		} catch (\Throwable $th) {
 			return ApiResponse::internalServerError();
@@ -60,7 +64,7 @@ class ProfileController extends Controller
 			if ($request->hasFile('avatar')) {
 				$file = $request->file('avatar');
 				if (FileHelper::store($file, 'avatars')) {
-					$user->avatar = $file->getClientOriginalName();
+					$user->avatar = '/' . $file->getClientOriginalName();
 				}
 			}
 			$user->save();
@@ -112,7 +116,7 @@ class ProfileController extends Controller
 			'updated_at' => Carbon::now()
 		]);
 		$playlist->save();
-		return ApiResponse::success($playlist);
+		return ApiResponse::success();
 	}
 
 	public function uploadSong(Request $request)
@@ -122,7 +126,7 @@ class ProfileController extends Controller
 			FileHelper::store($request->file('song'), 'songs');
 			FileHelper::store($request->file('lyric'), 'lyrics');
 			FileHelper::store($request->file('thumbnail'), 'thumbnails');
-			$song = Song::create([
+			Song::insert([
 				'name' => FileHelper::getFileName($request->file('song')),
 				'author_id' => Auth::user()->id,
 				'category_id' => $params['category-id'],
@@ -134,10 +138,7 @@ class ProfileController extends Controller
 				'created_at' => Carbon::now(),
 				'updated_at' => Carbon::now()
 			]);
-			$song->songPath = FileHelper::getUrl('songs', $song);
-			$song->lyricPath = FileHelper::getUrl('lyrics', $song);
-			$song->thumbnailPath = FileHelper::getUrl('thumbnails', $song);
-			return ApiResponse::success($song);
+			return ApiResponse::success();
 		} else {
 			return ApiResponse::dataNotfound();
 		}

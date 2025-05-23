@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\ApiResponse;
+use App\Helpers\FileHelper;
 use App\Models\Library;
 use App\Models\Playlist;
 use App\Models\Song;
@@ -16,11 +17,24 @@ class LibraryController extends Controller
 {
 	public function index()
 	{
+		$libraries = Library::with('author', 'playlist', 'playlist.author', 'artist', 'song', 'song.author', 'song.playlist', 'song.category')
+			->where('user_id', Auth::user()->id)
+			->get();
+		foreach ($libraries as $library) {
+			$library->author->avatar_path = FileHelper::getAvatar($library->author);
+			if (!is_null($library->playlist)) {
+				$playlist = $library->playlist;
+				$playlist->thumbnail_path = FileHelper::getThumbnail('playlist', $playlist);
+				$playlist->author->avatar_path = FileHelper::getAvatar($playlist->author);
+				$library->setRelation('playlist', $playlist);
+			}
+			FileHelper::getSongUrl($library->song);
+			if (!is_null($library->artist)) {
+				$library->artist->avatar_path = FileHelper::getAvatar($library->artist);
+			}
+		}
 		try {
-			$library = Library::with('playlists', 'artists', 'songs')
-				->where('user_id', Auth::user()->id)
-				->get();
-			return ApiResponse::success($library);
+			return ApiResponse::success($libraries);
 		} catch (\Throwable $th) {
 			return ApiResponse::dataNotfound();
 		}
@@ -110,21 +124,42 @@ class LibraryController extends Controller
 	public function search(Request $request)
 	{
 		$params = $request->all();
-		$libraries = Library::where('user_id', Auth::user()->id)->get();
-		$_library = new Library();
-		foreach ($libraries as $library) {
-			$_library->playlists[] = $library->playlists()
-				->where('name', 'like', $params['search-key'] . '%')->first();
-			$_library->artists[] = $library->artists()
-				->where('name', 'like', $params['search-key'] . '%')->first();
-			$_library->songs[] = $library->songs()
-				->where('name', 'like', $params['search-key'] . '%')->first();
-		}
+		$libraries = Library::where('user_id', Auth::user()->id)
+			->with(
+				[
+					'artist' => function ($query) use ($params) {
+						$query->where('name', 'like', $params['search-key'] . '%');
+					},
+					'playlist' => function ($query) use ($params) {
+						$query->where('name', 'like', $params['search-key'] . '%')
+							->with('author');
+					},
+					'song' => function ($query) use ($params) {
+						$query->where('name', 'like', $params['search-key'] . '%');
+					},
+				]
+			)
+			->get();
 		$result = [
-			'playlists' => collect($_library->playlists)->filter()->values()->toArray(),
-			'artists' => collect($_library->artists)->filter()->values()->toArray(),
-			'songs' => collect($_library->songs)->filter()->values()->toArray()
+			'artists' => [],
+			'playlists' => [],
+			'songs' => []
 		];
+		foreach ($libraries as $library) {
+			if (!is_null($library->artist)) {
+				$library->artist->avatar_path = FileHelper::getAvatar($library->artist);
+				array_push($result['artists'], $library->artist);
+			}
+			if (!is_null($library->playlist)) {
+				$library->playlist->thumbnail_path = FileHelper::getThumbnail('playlist', $library->playlist);
+				$library->playlist->author->avatar_path = FileHelper::getAvatar($library->playlist->author);
+				array_push($result['playlists'], $library->playlist);
+			}
+			if (!is_null($library->song)) {
+				FileHelper::getSongUrl($library->song);
+				array_push($result['songs'], $library->song);
+			}
+		}
 		return ApiResponse::success($result);
 	}
 }
