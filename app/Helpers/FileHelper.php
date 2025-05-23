@@ -13,7 +13,7 @@ class FileHelper
 	 * @param mixed $user
 	 * @return string
 	 */
-	private static function getNameFromEmail($user = null)
+	public static function getNameFromEmail($user = null)
 	{
 		if (!is_null($user)) {
 			return explode('@', $user->email)[0];
@@ -52,7 +52,6 @@ class FileHelper
 		return false;
 	}
 
-	// TODO: refactor all get url functions, fix missing thumbnail url for playlist and category
 	/**
 	 * Get assets url, currently can get url from songs, lyrics, song's thumbnail
 	 * @param string $location
@@ -61,7 +60,7 @@ class FileHelper
 	 */
 	public static function getUrl(string $location, $data)
 	{
-		if (!is_null($data) && ($location === 'songs' || $location === 'lyrics' || $location === 'thumbnails')) {
+		if (!is_null($data)) {
 			$path = asset("uploads/" . self::getNameFromEmail() . "/$location/");
 			switch ($location) {
 				case 'songs':
@@ -70,6 +69,25 @@ class FileHelper
 					return $path . $data->lyrics;
 				case 'thumbnails':
 					return $path . $data->thumbnail;
+				default:
+					return null;
+			}
+		} else {
+			return null;
+		}
+	}
+
+	public static function getSongUrl($song)
+	{
+		if (!is_null($song)) {
+			$song->song_path = FileHelper::getUrl('songs', $song);
+			$song->lyrics_path = FileHelper::getUrl('lyrics', $song);
+			$song->thumbnail_path = FileHelper::getUrl('thumbnails', $song);
+			$song->author->avatar_path = FileHelper::getAvatar(User::find($song->author_id));
+			$song->category->thumbnail_path = FileHelper::getThumbnail('category', $song->category);
+			if (!is_null($song->playlist)) {
+				$song->playlist->thumbnail_path = FileHelper::getThumbnail('playlist', $song->playlist);
+				$song->playlist->author->avatar_path = FileHelper::getAvatar($song->playlist->author);
 			}
 		} else {
 			return null;
@@ -78,15 +96,95 @@ class FileHelper
 
 	/**
 	 * Get user avatar url
-	 * @param \App\Models\User|null $user
+	 * @param mixed $user
 	 * @return string
 	 */
-	public static function getAvatar(User $user = null)
+	public static function getAvatar($user = null)
 	{
 		if (!is_null($user)) {
-			return asset('uploads/' . self::getNameFromEmail($user) . '/avatars/' . $user->avatar);
+			return asset('uploads/' . self::getNameFromEmail($user) . '/avatars' . $user->avatar);
 		} else {
-			return asset('uploads/' . self::getNameFromEmail() . '/avatars/' . Auth::user()->avatar);
+			return asset('uploads/' . self::getNameFromEmail() . '/avatars' . Auth::user()->avatar);
+		}
+	}
+
+	/**
+	 * Get thumbnail url
+	 * @param string $type
+	 * @param mixed $data
+	 * @return string|null
+	 */
+	public static function getThumbnail(string $type, $data)
+	{
+		if (!is_null($data)) {
+			switch ($type) {
+				case 'playlist':
+					$author = User::find($data->author_id);
+					return asset('uploads/' . self::getNameFromEmail($author) . '/thumbnails' . $data->thumbnail);
+				case 'category':
+					return asset('assets/categories/thumbnails' . $data->thumbnail);
+				default:
+					return null;
+			}
+		} else {
+			return null;
+		}
+	}
+
+	/**
+	 * Get all artists avatar url
+	 * @param mixed $artists
+	 * @return null
+	 */
+	public static function getArtistsUrl($artists)
+	{
+		if (!is_null($artists)) {
+			foreach ($artists as $artist) {
+				$artist->avatar_path = self::getAvatar($artist);
+			}
+		} else {
+			return null;
+		}
+	}
+
+	/**
+	 * Get all songs's url
+	 * @param mixed $songs
+	 * @return null
+	 */
+	public static function getSongsUrl($songs)
+	{
+		if (!is_null($songs)) {
+			foreach ($songs as $song) {
+				$song->song_path = self::getUrl('songs', $song);
+				$song->lyrics_path = self::getUrl('lyrics', $song);
+				$song->thumbnail_path = self::getUrl('thumbnails', $song);
+				$song->author->avatar_path = self::getAvatar(User::find($song->author_id));
+				$song->category->thumbnail_path = self::getThumbnail('category', $song->category);
+				if (!is_null($song->playlist)) {
+					$song->playlist->thumbnail_path = self::getThumbnail('playlist', $song->playlist);
+					$song->playlist->author->avatar_path = self::getAvatar($song->playlist->author);
+				}
+			}
+		} else {
+			return null;
+		}
+	}
+
+	/**
+	 * Get all playlists's url
+	 * @param mixed $playlists
+	 * @return null
+	 */
+	public static function getPlaylistsUrl($playlists)
+	{
+		if (!is_null($playlists)) {
+			foreach ($playlists as $playlist) {
+				$playlist->thumbnail_path = self::getThumbnail('playlist', $playlist);
+				$playlist->author->avatar_path = self::getAvatar($playlist->author);
+			}
+		} else {
+			return null;
 		}
 	}
 }
