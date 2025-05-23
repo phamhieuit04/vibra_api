@@ -25,18 +25,23 @@ class Library extends Model
 		'updated_at' => 'timestamp'
 	];
 
-	public function playlists()
+	public function author()
 	{
-		return $this->hasMany(Playlist::class, 'id', 'playlist_id');
+		return $this->belongsTo(User::class, 'user_id', 'id');
 	}
 
-	public function artists()
+	public function playlist()
 	{
-		return $this->hasMany(User::class, 'id', 'artist_id');
+		return $this->hasOne(Playlist::class, 'id', 'playlist_id');
 	}
 
-	public function songs()
+	public function artist()
 	{
-		return $this->hasMany(Song::class, 'id', 'song_id');
+		return $this->hasOne(User::class, 'id', 'artist_id');
+	}
+
+	public function song()
+	{
+		return $this->hasOne(Song::class, 'id', 'song_id');
 	}
 }
