@@ -46,7 +46,7 @@ Route::group(['prefix' => 'email'], function () {
 Route::middleware('auth:sanctum')->group(function () {
 	Route::group(['prefix' => 'library'], function () {
 		Route::get('/list-artist', [LibraryController::class, 'listArtist']);
-		Route::get('/list-album', [LibraryController::class, 'listAlbum']);
+		Route::get('/list-playlist', [LibraryController::class, 'listPlaylist']);
 		Route::get('/list-song', [LibraryController::class, 'listSong']);
 		Route::post('/store-playlist', [LibraryController::class, 'storePlaylist']);
 		Route::post('/update-playlist/{id}', [LibraryController::class, 'updatePlaylist']);

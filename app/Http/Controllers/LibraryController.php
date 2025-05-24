@@ -18,27 +18,33 @@ class LibraryController extends Controller
 	public function listArtist()
 	{
 		try {
-			$library = Library::withWhereHas('artist')->first();
-			$library->artist->avatar_path = FileHelper::getAvatar($library->artist);
-			return ApiResponse::success($library);
+			$libraries = Library::where('user_id', Auth::user()->id)
+				->withWhereHas('artist')->get();
+			foreach ($libraries as $library) {
+				$library->artist->avatar_path = FileHelper::getAvatar($library->artist);
+			}
+			return ApiResponse::success($libraries);
 		} catch (\Throwable $th) {
 			return ApiResponse::dataNotfound();
 		}
 	}
 
-	public function listAlbum()
+	public function listPlaylist(Request $request)
 	{
+		$params = $request->all();
 		try {
-			$library = Library::withWhereHas('playlist', function ($query) {
-				$query->where('type', 1);
-			})
-				->with('playlist.author')
-				->withWhereHas('song')
-				->first();
-			$library->playlist->thumbnail_path = FileHelper::getThumbnail('playlist', $library->playlist);
-			$library->playlist->author->avatar_path = FileHelper::getAvatar($library->playlist->author);
-			FileHelper::getSongUrl($library->song);
-			return ApiResponse::success($library);
+			$libraries = Library::where('user_id', Auth::user()->id)
+				->withWhereHas('playlist', function ($query) use ($params) {
+					$query->where('type', $params['type']);
+				})
+				->with('playlist.author', 'song')
+				->get();
+			foreach ($libraries as $library) {
+				$library->playlist->thumbnail_path = FileHelper::getThumbnail('playlist', $library->playlist);
+				$library->playlist->author->avatar_path = FileHelper::getAvatar($library->playlist->author);
+				FileHelper::getSongUrl($library->song);
+			}
+			return ApiResponse::success($libraries);
 		} catch (\Throwable $th) {
 			return ApiResponse::dataNotfound();
 		}
@@ -47,9 +53,12 @@ class LibraryController extends Controller
 	public function listSong()
 	{
 		try {
-			$library = Library::withWhereHas('song')->first();
-			FileHelper::getSongUrl($library->song);
-			return ApiResponse::success($library);
+			$libraries = Library::where('user_id', Auth::user()->id)
+				->withWhereHas('song')->get();
+			foreach ($libraries as $library) {
+				FileHelper::getSongUrl($library->song);
+			}
+			return ApiResponse::success($libraries);
 		} catch (\Throwable $th) {
 			return ApiResponse::dataNotfound();
 		}
