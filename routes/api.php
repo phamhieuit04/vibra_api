@@ -9,6 +9,7 @@ use App\Http\Controllers\LibraryController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SongController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\PaymentController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -84,6 +85,10 @@ Route::middleware('auth:sanctum')->group(function () {
 		Route::get('/create-album', [ProfileController::class, 'createAlbum']);
 		Route::post('/update-album/{id}', [ProfileController::class, 'updateAlbum']);
 		Route::post('upload-song', [ProfileController::class, 'uploadSong']);
+	});
+
+	Route::group(['prefix' => 'payment'], function () {
+		Route::get('/create-bill', [PaymentController::class, 'createBill']);
 	});
 
 	Route::get('/logout', [AuthController::class, 'logout']);
