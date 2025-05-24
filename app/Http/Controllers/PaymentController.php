@@ -5,12 +5,13 @@ namespace App\Http\Controllers;
 use App\Helpers\ApiResponse;
 use App\Models\Bill;
 use App\Models\BillDetail;
+use App\Models\Playlist;
 use App\Models\Song;
 use App\Models\User;
+use App\Services\PayOSService;
 use Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
-use function PHPUnit\Framework\returnArgument;
 
 class PaymentController extends Controller
 {
@@ -42,6 +43,8 @@ class PaymentController extends Controller
                         'updated_at' => $now
                     ]);
                 }
+                $playlist = Playlist::find($params['playlist_id']);
+                $newBill->total_price = $playlist->price;
             } else {
                 // create bill detail for one song
                 BillDetail::insert([
@@ -50,10 +53,13 @@ class PaymentController extends Controller
                     'created_at' => $now,
                     'updated_at' => $now
                 ]);
+                $song = Song::find($params['song_id']);
+                $newBill->total_price = $song->price;
             }
-            return ApiResponse::success();
+            $res = PayOSService::createPaymentLink($newBill);
+            return ApiResponse::success($res['checkoutUrl']);
         } catch (\Throwable $th) {
-            return ApiResponse::dataNotfound();
+            return ApiResponse::internalServerError();
         }
     }
 }
