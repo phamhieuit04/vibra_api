@@ -15,26 +15,41 @@ use Illuminate\Support\Facades\DB;
 
 class LibraryController extends Controller
 {
-	public function index()
+	public function listArtist()
 	{
-		$libraries = Library::with('author', 'playlist', 'playlist.author', 'artist', 'song', 'song.author', 'song.playlist', 'song.category')
-			->where('user_id', Auth::user()->id)
-			->get();
-		foreach ($libraries as $library) {
-			$library->author->avatar_path = FileHelper::getAvatar($library->author);
-			if (!is_null($library->playlist)) {
-				$playlist = $library->playlist;
-				$playlist->thumbnail_path = FileHelper::getThumbnail('playlist', $playlist);
-				$playlist->author->avatar_path = FileHelper::getAvatar($playlist->author);
-				$library->setRelation('playlist', $playlist);
-			}
-			FileHelper::getSongUrl($library->song);
-			if (!is_null($library->artist)) {
-				$library->artist->avatar_path = FileHelper::getAvatar($library->artist);
-			}
-		}
 		try {
-			return ApiResponse::success($libraries);
+			$library = Library::withWhereHas('artist')->first();
+			$library->artist->avatar_path = FileHelper::getAvatar($library->artist);
+			return ApiResponse::success($library);
+		} catch (\Throwable $th) {
+			return ApiResponse::dataNotfound();
+		}
+	}
+
+	public function listAlbum()
+	{
+		try {
+			$library = Library::withWhereHas('playlist', function ($query) {
+				$query->where('type', 1);
+			})
+				->with('playlist.author')
+				->withWhereHas('song')
+				->first();
+			$library->playlist->thumbnail_path = FileHelper::getThumbnail('playlist', $library->playlist);
+			$library->playlist->author->avatar_path = FileHelper::getAvatar($library->playlist->author);
+			FileHelper::getSongUrl($library->song);
+			return ApiResponse::success($library);
+		} catch (\Throwable $th) {
+			return ApiResponse::dataNotfound();
+		}
+	}
+
+	public function listSong()
+	{
+		try {
+			$library = Library::withWhereHas('song')->first();
+			FileHelper::getSongUrl($library->song);
+			return ApiResponse::success($library);
 		} catch (\Throwable $th) {
 			return ApiResponse::dataNotfound();
 		}
