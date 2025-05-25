@@ -11,29 +11,21 @@ use Illuminate\Support\Facades\DB;
 class SongSeeder extends Seeder
 {
 	private $names = [
-		"Someone Like You",
-		"Thriller",
-		"Blinding Lights",
-		"Let It Be",
-		"I Will Always Love You",
-		"Despacito",
-		"Lose Yourself",
-		"Uptown Funk",
-		"Shake It Off",
-		"Yesterday"
+		"Lemon",
+		"Flamingo",
+		"Halzion",
+		"Gunjou",
+		"My future",
+		"Lost cause"
 	];
 
 	private $descriptions = [
-		"Bản ballad đầy cảm xúc về sự chia ly và nhớ nhung người cũ.",
-		"Ca khúc kinh điển với phần nhạc video mang tính cách mạng.",
-		"Một bản synth-pop hiện đại với âm thanh retro và giai điệu lôi cuốn.",
-		"Bài hát nhẹ nhàng, cổ vũ niềm tin và sự an ủi trong khó khăn.",
-		"Một bản ballad kinh điển về tình yêu vĩnh cửu và sự chia xa.",
-		"Ca khúc Latin sôi động làm mưa làm gió toàn cầu.",
-		"Một bản rap đầy năng lượng khuyến khích nắm lấy cơ hội duy nhất trong đời.",
-		"Giai điệu vui tươi, dễ nhớ, pha trộn giữa funk và pop hiện đại.",
-		"Một ca khúc tự tin và vui nhộn, khuyến khích bỏ qua chỉ trích.",
-		"Bản ballad ngắn gọn nhưng đầy cảm xúc về tình yêu đã qua."
+		"Phát hành dưới dạng đĩa đơn vào ngày 14 tháng 3 năm 2018. Bên cạnh đó, đây cũng chính là ca khúc chủ đề của bộ phim truyền hình đình đám Unnatural lên sóng cùng năm",
+		"Yonezu bị ảnh hưởng bởi việc nhớ lại những điều từ khi anh ấy uống rượu. Bài hát được kể theo góc nhìn của một người tìm kiếm khoái lạc.",
+		"Halzion dựa trên Soredemo, Happy End, một truyện ngắn do Hashizume Shunki viết, đánh dấu lần đầu tiên Yoasobi hợp tác với một tiểu thuyết gia chuyên nghiệp.",
+		"Lấy cảm hứng từ bộ truyện tranh Blue Period của Tsubasa Yamaguchi, bài hát được mô tả là 'một bài hát cổ vũ truyền cảm hứng cho người nghe bằng cách đắm chìm vào những gì họ thích và thể hiện những gì họ thấy'.",
+		"Một bản ballad R&B và ambient với ảnh hưởng của soul và jazz , lời bài hát đề cập đến một bài ca ngợi tình yêu bản thân và sức mạnh cá nhân. Eilish đã viết bài hát cùng với nhà sản xuất của nó, Finneas O'Connell.",
+		"Eilish sử dụng phong cách hát ngân nga. Trong lời bài hát, cô ấy ăn mừng sự chia tay với một người bạn đời cũ kiêu ngạo và thờ ơ, gọi họ là 'lost cause' trong phần điệp khúc ."
 	];
 
 	/**
@@ -42,19 +34,57 @@ class SongSeeder extends Seeder
 	public function run(): void
 	{
 		$from = count(Song::all());
-		for ($i = $from; $i < $from + 10; $i++) {
+		for ($i = $from; $i < $from + 2; $i++) {
 			DB::table('songs')->insert([
 				'name' => $this->names[$i],
-				'author_id' => rand(1, 10),
+				'author_id' => 1,
+				'playlist_id' => 1,
 				'category_id' => rand(1, 10),
 				'lyrics' => '/default.txt',
 				'thumbnail' => '/default.jpg',
-				'total_played' => rand(0, 10000),
+				'total_played' => 0,
 				'status' => 1,
-				'price' => rand(0, 10000),
+				'price' => 0,
 				'created_at' => Carbon::now(),
 				'updated_at' => Carbon::now()
 			]);
+		}
+		for ($i = $from + 2; $i < $from + 4; $i++) {
+			DB::table('songs')->insert([
+				'name' => $this->names[$i],
+				'author_id' => 2,
+				'playlist_id' => 2,
+				'category_id' => rand(1, 10),
+				'lyrics' => '/default.txt',
+				'thumbnail' => '/default.jpg',
+				'total_played' => 0,
+				'status' => 1,
+				'price' => 0,
+				'created_at' => Carbon::now(),
+				'updated_at' => Carbon::now()
+			]);
+		}
+		for ($i = $from + 4; $i < $from + 6; $i++) {
+			DB::table('songs')->insert([
+				'name' => $this->names[$i],
+				'author_id' => 3,
+				'playlist_id' => 3,
+				'category_id' => rand(1, 10),
+				'lyrics' => '/default.txt',
+				'thumbnail' => '/default.jpg',
+				'total_played' => 0,
+				'status' => 1,
+				'price' => 0,
+				'created_at' => Carbon::now(),
+				'updated_at' => Carbon::now()
+			]);
+		}
+
+		for ($i = $from; $i < count($this->names); $i++) {
+			$song = Song::find($i + 1);
+			$song->thumbnail = $this->names[$i] . " thumbnail.jpg";
+			$song->lyrics = $this->names[$i] . " lyrics.txt";
+			$song->save();
 		}
 	}
 }

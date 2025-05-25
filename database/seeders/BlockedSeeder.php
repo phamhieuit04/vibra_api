@@ -16,18 +16,24 @@ class BlockedSeeder extends Seeder
 	public function run(): void
 	{
 		$from = count(Blocked::all());
-		for ($i = $from; $i < $from + 5; $i++) {
+		for ($i = $from; $i < $from + 3; $i++) {
 			DB::table('blocked')->insert([
-				'user_id' => rand(1, 10),
-				'song_id' => rand(1, 10),
+				'user_id' => rand(1, 3),
+				'song_id' => rand(1, 6),
 				'created_at' => Carbon::now(),
 				'updated_at' => Carbon::now()
 			]);
 		}
-		for ($i = $from + 5; $i < $from + 10; $i++) {
+		for ($i = $from; $i < $from + 3; $i++) {
+			$userId = $i + 1;
+			$possibleArtistIds = array_diff([1, 2, 3], [$userId]);
+			$possibleArtistIds = array_values($possibleArtistIds);
+
+			$artistId = $possibleArtistIds[array_rand($possibleArtistIds)];
+
 			DB::table('blocked')->insert([
-				'user_id' => rand(1, 10),
-				'artist_id' => rand(1, 10),
+				'user_id' => $userId,
+				'artist_id' => $artistId,
 				'created_at' => Carbon::now(),
 				'updated_at' => Carbon::now()
 			]);
