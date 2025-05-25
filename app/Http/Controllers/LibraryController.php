@@ -100,7 +100,10 @@ class LibraryController extends Controller
 		try {
 			DB::beginTransaction();
 			DB::table('libraries')->where('playlist_id', $id)->delete();
-			DB::table('playlists')->where('id', $id)->delete();
+			DB::table('playlists')
+				->where('id', $id)
+				->where('type', 2)
+				->delete();
 			DB::commit();
 			return ApiResponse::success();
 		} catch (\Throwable $th) {

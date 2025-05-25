@@ -53,9 +53,17 @@ class SongController extends Controller
 	/**
 	 * Update the specified resource in storage.
 	 */
-	public function update(Request $request, string $id)
+	public function update(Request $request)
 	{
-		//
+		$params = $request->all();
+		if (isset($params['song_id']) && isset($params['playlist_id'])) {
+			$song = Song::find($params['song_id']);
+			$song->playlist_id = $params['playlist_id'];
+			$song->save();
+			return ApiResponse::success();
+		} else {
+			return ApiResponse::internalServerError();
+		}
 	}
 
 	/**

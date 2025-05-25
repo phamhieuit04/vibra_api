@@ -6,6 +6,7 @@ use App\Http\Controllers\DemoController;
 use App\Http\Controllers\FirebaseController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LibraryController;
+use App\Http\Controllers\PlaylistController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SongController;
 use App\Http\Controllers\UserController;
@@ -70,6 +71,11 @@ Route::middleware('auth:sanctum')->group(function () {
 	Route::group(['prefix' => 'song'], function () {
 		Route::get('/show/{id}', [SongController::class, 'show']);
 		Route::get('/store/{id}', [SongController::class, 'store']);
+		Route::get('/update', [SongController::class, 'update']);
+	});
+
+	Route::group(['prefix' => 'playlist'], function () {
+		Route::get('/show/{id}', [PlaylistController::class, 'show']);
 	});
 
 	Route::group(['prefix' => 'artist'], function () {
