@@ -39,7 +39,6 @@ class HomeController extends Controller
 			$songs = Song::whereStatus(1)
 				->with('author', 'playlist', 'category', 'playlist.author')
 				->orderBy('total_played', 'DESC')
-				->where('id', 1)
 				->get();
 			FileHelper::getSongsUrl($songs);
 			return ApiResponse::success($songs);

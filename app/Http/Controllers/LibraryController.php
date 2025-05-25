@@ -70,13 +70,19 @@ class LibraryController extends Controller
 			$user = User::where('id', Auth::user()->id)
 				->with('playlists')
 				->first();
-			Playlist::insert([
+			$playlist = Playlist::create([
 				'name' => 'Playlist của tôi #' . count($user->playlists) + 1,
 				'author_id' => $user->id,
 				'thumbnail' => $user->avatar,
 				'type' => 2,
 				'total_song' => 0,
 				'price' => 0,
+				'created_at' => Carbon::now(),
+				'updated_at' => Carbon::now()
+			]);
+			Library::create([
+				'user_id' => $user->id,
+				'playlist_id' => $playlist->id,
 				'created_at' => Carbon::now(),
 				'updated_at' => Carbon::now()
 			]);
