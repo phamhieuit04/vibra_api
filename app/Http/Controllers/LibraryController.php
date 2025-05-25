@@ -80,7 +80,7 @@ class LibraryController extends Controller
 				'created_at' => Carbon::now(),
 				'updated_at' => Carbon::now()
 			]);
-			Library::create([
+			Library::insert([
 				'user_id' => $user->id,
 				'playlist_id' => $playlist->id,
 				'created_at' => Carbon::now(),

@@ -72,6 +72,7 @@ Route::middleware('auth:sanctum')->group(function () {
 		Route::get('/show/{id}', [SongController::class, 'show']);
 		Route::get('/store/{id}', [SongController::class, 'store']);
 		Route::get('/update', [SongController::class, 'update']);
+		Route::get('/update/{id}', [SongController::class, 'updateTotalPlayed']);
 	});
 
 	Route::group(['prefix' => 'playlist'], function () {

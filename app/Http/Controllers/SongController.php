@@ -66,6 +66,18 @@ class SongController extends Controller
 		}
 	}
 
+	public function updateTotalPlayed(Request $request, $id)
+	{
+		try {
+			$song = Song::find($id);
+			$song->total_played = $song->total_played + 1;
+			$song->save();
+			return ApiResponse::success();
+		} catch (\Throwable $th) {
+			return ApiResponse::internalServerError();
+		}
+	}
+
 	/**
 	 * Remove the specified resource from storage.
 	 */
