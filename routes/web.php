@@ -1,5 +1,6 @@
 <?php
 
+use App\Helpers\ApiResponse;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,5 +15,9 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+	return view('welcome');
 });
+
+Route::get('/login', function () {
+	return ApiResponse::unauthorized();
+})->name('login');

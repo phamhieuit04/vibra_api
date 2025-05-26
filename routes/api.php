@@ -86,18 +86,19 @@ Route::middleware('auth:sanctum')->group(function () {
 		Route::get('/block/{id}', [ArtistController::class, 'block']);
 	});
 
-	Route::group(['prefix' => 'profile'], function () {
-		Route::get('/show', [ProfileController::class, 'show']);
-		Route::post('/update', [ProfileController::class, 'update']);
-		Route::get('/index', [ProfileController::class, 'index']);
-		Route::get('/create-album', [ProfileController::class, 'createAlbum']);
-		Route::post('/update-album/{id}', [ProfileController::class, 'updateAlbum']);
-		Route::post('upload-song', [ProfileController::class, 'uploadSong']);
-	});
-
 	Route::group(['prefix' => 'category'], function () {
 		Route::get('/index', [CategoryController::class, 'index']);
 		Route::get('/show/{id}', [CategoryController::class, 'show']);
+	});
+
+	Route::group(['prefix' => 'profile'], function () {
+		Route::get('/show', [ProfileController::class, 'show']);
+		Route::post('/update', [ProfileController::class, 'update']);
+		Route::get('/list-album', [ProfileController::class, 'listAlbum']);
+		Route::get('/list-song', [ProfileController::class, 'listSong']);
+		Route::get('/create-album', [ProfileController::class, 'createAlbum']);
+		Route::post('/update-album/{id}', [ProfileController::class, 'updateAlbum']);
+		Route::post('upload-song', [ProfileController::class, 'uploadSong']);
 	});
 
 	Route::group(['prefix' => 'payment'], function () {

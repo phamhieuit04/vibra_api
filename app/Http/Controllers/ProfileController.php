@@ -16,7 +16,7 @@ class ProfileController extends Controller
 	/**
 	 * Display a listing of the resource.
 	 */
-	public function index()
+	public function listAlbum()
 	{
 		$albums = Playlist::where('author_id', Auth::user()->id)
 			->with('author')
@@ -59,6 +59,7 @@ class ProfileController extends Controller
 				'name' => isset($params['name']) ? $params['name'] : $user->name,
 				'gender' => isset($params['gender']) ? $params['gender'] : $user->gender,
 				'birth' => isset($params['birth']) ? $params['birth'] : $user->birth,
+				'description' => isset($params['description']) ? $params['description'] : $user->description,
 				'updated_at' => Carbon::now()
 			]);
 			if ($request->hasFile('avatar')) {
@@ -140,6 +141,17 @@ class ProfileController extends Controller
 			]);
 			return ApiResponse::success();
 		} else {
+			return ApiResponse::dataNotfound();
+		}
+	}
+
+	public function listSong()
+	{
+		try {
+			$songs = Song::where('author_id', Auth::user()->id)->get();
+			FileHelper::getSongsUrl($songs);
+			return ApiResponse::success($songs);
+		} catch (\Throwable $th) {
 			return ApiResponse::dataNotfound();
 		}
 	}

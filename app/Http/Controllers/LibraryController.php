@@ -118,7 +118,6 @@ class LibraryController extends Controller
 		try {
 			$playlist = Playlist::where('id', $id)->first();
 			$playlist->name = isset($params['name']) ? $params['name'] : $playlist->name;
-			$playlist->description = isset($params['description']) ? $params['description'] : $playlist->description;
 			if ($request->hasFile('thumbnail')) {
 				$file = $request->file('thumbnail');
 				$playlist->thumbnail = '/' . $file->getClientOriginalName();
