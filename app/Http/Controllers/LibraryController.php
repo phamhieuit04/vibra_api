@@ -121,7 +121,8 @@ class LibraryController extends Controller
 			$playlist->description = isset($params['description']) ? $params['description'] : $playlist->description;
 			if ($request->hasFile('thumbnail')) {
 				$file = $request->file('thumbnail');
-				$playlist->thumbnail = $file->getClientOriginalName();
+				$playlist->thumbnail = '/' . $file->getClientOriginalName();
+				FileHelper::store($file, 'thumbnails');
 			}
 			$playlist->updated_at = Carbon::now();
 			$playlist->save();

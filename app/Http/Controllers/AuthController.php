@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 
 class AuthController extends Controller
 {
@@ -36,16 +37,20 @@ class AuthController extends Controller
 	public function signup(Request $request)
 	{
 		$params = $request->all();
+		$user = User::create([
+			'name' => explode('@', $params['email'])[0],
+			'email' => $params['email'],
+			'password' => Hash::make($params['password']),
+			'avatar' => '/default.jpg',
+			'created_at' => Carbon::now(),
+			'updated_at' => Carbon::now()
+		]);
+		Storage::disk('public-api')->copy(
+			'assets/avatars/default.jpg',
+			'uploads/' . FileHelper::getNameFromEmail($user) . '/avatars/default.jpg'
+		);
+		return ApiResponse::success();
 		try {
-			User::insert([
-				'name' => explode('@', $params['email'])[0],
-				'email' => $params['email'],
-				'password' => Hash::make($params['password']),
-				'avatar' => '/default.jpg',
-				'created_at' => Carbon::now(),
-				'updated_at' => Carbon::now()
-			]);
-			return ApiResponse::success();
 		} catch (\Throwable $th) {
 			return ApiResponse::internalServerError();
 		}

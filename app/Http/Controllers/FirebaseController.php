@@ -9,6 +9,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
 class FirebaseController extends Controller
@@ -40,6 +41,10 @@ class FirebaseController extends Controller
 					]);
 					$user->token = $user->createToken($user->email)->plainTextToken;
 					$user->avatar_path = FileHelper::getAvatar($user);
+					Storage::disk('public-api')->copy(
+						'assets/avatars/default.jpg',
+						'uploads/' . FileHelper::getNameFromEmail($user) . '/avatars/default.jpg'
+					);
 					return ApiResponse::success($user);
 				}
 			} catch (\Throwable $th) {
