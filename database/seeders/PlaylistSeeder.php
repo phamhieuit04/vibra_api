@@ -35,7 +35,7 @@ class PlaylistSeeder extends Seeder
 				'author_id' => $i + 1,
 				'thumbnail' => '/default.jpg',
 				'type' => 1,
-				'total_song' => 0,
+				'total_song' => 2,
 				'price' => 0,
 				'created_at' => Carbon::now(),
 				'updated_at' => Carbon::now()

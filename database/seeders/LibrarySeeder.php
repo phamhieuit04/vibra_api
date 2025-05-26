@@ -18,8 +18,8 @@ class LibrarySeeder extends Seeder
 		$from = count(Library::all());
 		for ($i = $from; $i < $from + 3; $i++) {
 			DB::table('libraries')->insert([
-				'user_id' => rand(1, 3),
-				'playlist_id' => rand(1, 3),
+				'user_id' => $i + 1,
+				'playlist_id' => $i + 1,
 				'created_at' => Carbon::now(),
 				'updated_at' => Carbon::now()
 			]);
