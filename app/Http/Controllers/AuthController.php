@@ -10,6 +10,7 @@ use App\Notifications\VerifyEmail;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
@@ -40,7 +41,9 @@ class AuthController extends Controller
 				'name' => explode('@', $params['email'])[0],
 				'email' => $params['email'],
 				'password' => Hash::make($params['password']),
-				'avatar' => '/default.jpg'
+				'avatar' => '/default.jpg',
+				'created_at' => Carbon::now(),
+				'updated_at' => Carbon::now()
 			]);
 			return ApiResponse::success();
 		} catch (\Throwable $th) {

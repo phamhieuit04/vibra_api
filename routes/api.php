@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ArtistController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DemoController;
 use App\Http\Controllers\FirebaseController;
 use App\Http\Controllers\HomeController;
@@ -92,6 +93,11 @@ Route::middleware('auth:sanctum')->group(function () {
 		Route::get('/create-album', [ProfileController::class, 'createAlbum']);
 		Route::post('/update-album/{id}', [ProfileController::class, 'updateAlbum']);
 		Route::post('upload-song', [ProfileController::class, 'uploadSong']);
+	});
+
+	Route::group(['prefix' => 'category'], function () {
+		Route::get('/index', [CategoryController::class, 'index']);
+		Route::get('/show/{id}', [CategoryController::class, 'show']);
 	});
 
 	Route::group(['prefix' => 'payment'], function () {
