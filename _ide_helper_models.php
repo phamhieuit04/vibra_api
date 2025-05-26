@@ -112,12 +112,10 @@ namespace App\Models{
  * @property int|null $song_id
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\User> $artists
- * @property-read int|null $artists_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Playlist> $playlists
- * @property-read int|null $playlists_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Song> $songs
- * @property-read int|null $songs_count
+ * @property-read \App\Models\User|null $artist
+ * @property-read \App\Models\User $author
+ * @property-read \App\Models\Playlist|null $playlist
+ * @property-read \App\Models\Song|null $song
  * @method static \Illuminate\Database\Eloquent\Builder|Library newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Library newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Library query()
@@ -170,6 +168,7 @@ namespace App\Models{
  *
  * @property int $id
  * @property string $name
+ * @property string|null $description
  * @property int $author_id
  * @property int|null $playlist_id
  * @property int $category_id
@@ -189,6 +188,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|Song whereAuthorId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Song whereCategoryId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Song whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Song whereDescription($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Song whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Song whereLyrics($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Song whereName($value)
@@ -208,6 +208,7 @@ namespace App\Models{
  *
  * @property int $id
  * @property string $name
+ * @property string|null $description
  * @property string $email
  * @property string|null $gender
  * @property \Illuminate\Support\Carbon|null $birth
@@ -231,6 +232,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|User whereAvatar($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereBirth($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereDescription($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereEmail($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereEmailVerifiedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereGender($value)

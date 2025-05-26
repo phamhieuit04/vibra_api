@@ -82,8 +82,9 @@ class SongSeeder extends Seeder
 
 		for ($i = $from; $i < count($this->names); $i++) {
 			$song = Song::find($i + 1);
-			$song->thumbnail = $this->names[$i] . " thumbnail.jpg";
-			$song->lyrics = $this->names[$i] . " lyrics.txt";
+			$song->thumbnail = '/' . $this->names[$i] . " thumbnail.jpg";
+			$song->lyrics = '/' . $this->names[$i] . " lyrics.txt";
+			$song->description = $this->descriptions[$i];
 			$song->save();
 		}
 	}
