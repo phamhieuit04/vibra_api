@@ -61,7 +61,10 @@ class ArtistController extends Controller
 
 	public function follow(Request $request, $id)
 	{
-		try {
+		$library = Library::where('user_id', Auth::user()->id)
+			->where('artist_id', $id)
+			->first();
+		if (is_null($library)) {
 			Library::insert([
 				'user_id' => Auth::user()->id,
 				'artist_id' => $id,
@@ -69,8 +72,8 @@ class ArtistController extends Controller
 				'updated_at' => Carbon::now()
 			]);
 			return ApiResponse::success();
-		} catch (\Throwable $th) {
-			return ApiResponse::dataNotfound();
+		} else {
+			return ApiResponse::internalServerError();
 		}
 	}
 
