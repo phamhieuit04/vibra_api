@@ -33,7 +33,7 @@ class PlaylistSeeder extends Seeder
 				'name' => $this->names[$i],
 				'description' => $this->descriptions[$i],
 				'author_id' => $i + 1,
-				'thumbnail' => '/default.jpg',
+				'thumbnail' => '/' . $this->names[$i] . ' thumbnail.jpg',
 				'type' => 1,
 				'total_song' => 2,
 				'price' => 0,

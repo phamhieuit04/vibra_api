@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Helpers\FileHelper;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -15,26 +16,12 @@ class UserSeeder extends Seeder
 		"Kenshi Yonezu",
 		"Yoasobi",
 		"Billie Eilish",
-		// "Jack",
-		// "Hoàng Dũng",
-		// "Wanuka",
-		// "Natori",
-		// "Billie Eilish",
-		// "Aurora",
-		// "Tuấn Ngọc"
 	];
 
 	private $emails = [
 		"kenshi@gmail.com",
 		"yoasobi@gmail.com",
 		"billie@gmail.com",
-		// "jack@gmail.com",
-		// "hoangdung@gmail.com",
-		// "wanuka@gmail.com",
-		// "natori@gmail.com",
-		// "billie@gmail.com",
-		// "aurora@gmail.com",
-		// "tuanngoc@gmail.com"
 	];
 	/**
 	 * Run the database seeds.
@@ -43,11 +30,13 @@ class UserSeeder extends Seeder
 	{
 		$from = count(User::all());
 		for ($i = $from; $i < count($this->names); $i++) {
+			$user = new User();
+			$user->email = $this->emails[$i];
 			DB::table('users')->insert([
 				'name' => $this->names[$i],
 				'email' => $this->emails[$i],
 				'password' => Hash::make('12345678'),
-				'avatar' => '/default.jpg',
+				'avatar' => '/' . FileHelper::getNameFromEmail($user) . '.jpg',
 				'created_at' => Carbon::now(),
 				'updated_at' => Carbon::now()
 			]);
