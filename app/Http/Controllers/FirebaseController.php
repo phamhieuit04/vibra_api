@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\ApiResponse;
+use App\Helpers\FileHelper;
 use App\Http\Resources\AuthResource;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -27,6 +28,7 @@ class FirebaseController extends Controller
 						$user->save();
 					}
 					$user->token = $user->createToken($user->email)->plainTextToken;
+					$user->avatar_path = FileHelper::getAvatar($user);
 					return ApiResponse::success($user);
 				} else {
 					$user = User::create([
@@ -37,7 +39,8 @@ class FirebaseController extends Controller
 						'avatar' => '/default.jpg'
 					]);
 					$user->token = $user->createToken($user->email)->plainTextToken;
-					return ApiResponse::success(new AuthResource($user));
+					$user->avatar_path = FileHelper::getAvatar($user);
+					return ApiResponse::success($user);
 				}
 			} catch (\Throwable $th) {
 				return ApiResponse::internalServerError();

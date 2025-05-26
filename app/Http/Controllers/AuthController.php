@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\ApiResponse;
+use App\Helpers\FileHelper;
 use App\Http\Resources\AuthResource;
 use App\Models\User;
 use App\Notifications\VerifyEmail;
@@ -24,7 +25,8 @@ class AuthController extends Controller
 			]);
 			$user = Auth::user();
 			$user->token = $user->createToken($user->email)->plainTextToken;
-			return ApiResponse::success(new AuthResource($user));
+			$user->avatar_path = FileHelper::getAvatar($user);
+			return ApiResponse::success($user);
 		} catch (\Throwable $th) {
 			return ApiResponse::dataNotfound();
 		}
@@ -34,7 +36,7 @@ class AuthController extends Controller
 	{
 		$params = $request->all();
 		try {
-			$user = User::create([
+			User::insert([
 				'name' => explode('@', $params['email'])[0],
 				'email' => $params['email'],
 				'password' => Hash::make($params['password']),

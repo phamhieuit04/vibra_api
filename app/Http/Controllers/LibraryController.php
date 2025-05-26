@@ -119,7 +119,10 @@ class LibraryController extends Controller
 			$playlist = Playlist::where('id', $id)->first();
 			$playlist->name = isset($params['name']) ? $params['name'] : $playlist->name;
 			$playlist->description = isset($params['description']) ? $params['description'] : $playlist->description;
-			$playlist->thumbnail = isset($params['thumbnail']) ? $params['thumbnail'] : $playlist->thumbnail;
+			if ($request->hasFile('thumbnail')) {
+				$file = $request->file('thumbnail');
+				$playlist->thumbnail = $file->getClientOriginalName();
+			}
 			$playlist->updated_at = Carbon::now();
 			$playlist->save();
 			return ApiResponse::success();
