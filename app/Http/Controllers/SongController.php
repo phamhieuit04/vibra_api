@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Helpers\ApiResponse;
 use App\Helpers\FileHelper;
 use App\Models\Library;
+use App\Models\Playlist;
 use App\Models\Song;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -60,6 +61,8 @@ class SongController extends Controller
 			$song = Song::find($params['song_id']);
 			$song->playlist_id = $params['playlist_id'];
 			$song->save();
+			$playlist = Playlist::find($params['playlist_id']);
+			$playlist->total_song += 1;
 			return ApiResponse::success();
 		} else {
 			return ApiResponse::internalServerError();
