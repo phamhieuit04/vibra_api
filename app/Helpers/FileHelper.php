@@ -61,7 +61,7 @@ class FileHelper
 	public static function getUrl(string $location, $data)
 	{
 		if (!is_null($data)) {
-			$path = asset("uploads/" . self::getNameFromEmail() . "/$location/");
+			$path = asset("uploads/" . self::getNameFromEmail($data->author) . "/$location/");
 			switch ($location) {
 				case 'songs':
 					return $path . '/' . $data->name . '.mp3';
