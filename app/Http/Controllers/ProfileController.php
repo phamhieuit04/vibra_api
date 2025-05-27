@@ -133,6 +133,7 @@ class ProfileController extends Controller
 				'category_id' => $params['category-id'],
 				'lyrics' => '/' . $request->file('lyric')->getClientOriginalName(),
 				'thumbnail' => '/' . $request->file('thumbnail')->getClientOriginalName(),
+				'description' => $params['description'],
 				'total_played' => 0,
 				'status' => 1,
 				'price' => 0,
