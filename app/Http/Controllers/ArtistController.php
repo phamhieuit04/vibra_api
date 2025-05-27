@@ -6,6 +6,7 @@ use App\Helpers\ApiResponse;
 use App\Helpers\FileHelper;
 use App\Models\Blocked;
 use App\Models\Library;
+use App\Models\Song;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -16,9 +17,15 @@ class ArtistController extends Controller
 	/**
 	 * Display a listing of the resource.
 	 */
-	public function index()
+	public function index(Request $request, $id)
 	{
-		//
+		try {
+			$songs = Song::where('author_id', $id)->get();
+			FileHelper::getSongsUrl($songs);
+			return ApiResponse::success($songs);
+		} catch (\Throwable $th) {
+			return ApiResponse::internalServerError();
+		}
 	}
 
 	/**
