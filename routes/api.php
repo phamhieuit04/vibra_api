@@ -81,7 +81,8 @@ Route::middleware('auth:sanctum')->group(function () {
 	});
 
 	Route::group(['prefix' => 'artist'], function () {
-		Route::get('/index/{id}', [ArtistController::class, 'index']);
+		Route::get('/get-artist-songs/{id}', [ArtistController::class, 'getArtistSongs']);
+		Route::get('/get-artist-albums/{id}', [ArtistController::class, 'getArtistAlbums']);
 		Route::get('/show/{id}', [ArtistController::class, 'show']);
 		Route::get('/follow/{id}', [ArtistController::class, 'follow']);
 		Route::get('/block/{id}', [ArtistController::class, 'block']);
