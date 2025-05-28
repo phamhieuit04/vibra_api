@@ -132,6 +132,23 @@ class LibraryController extends Controller
 		}
 	}
 
+	public function listPlaylistSong(Request $request, $id)
+	{
+		try {
+			$params = $request->all();
+			$playlists = Library::where('playlist_id', $id)
+				->where('user_id', Auth::user()->id)
+				->whereNot('song_id', null)
+				->with('song', 'song.author')->get();
+			foreach ($playlists as $playlist) {
+				FileHelper::getSongUrl($playlist->song);
+			}
+			return ApiResponse::success($playlists);
+		} catch (\Throwable $th) {
+			return ApiResponse::internalServerError();
+		}
+	}
+
 	public function destroyFavoriteSong(Request $request, $id)
 	{
 		try {

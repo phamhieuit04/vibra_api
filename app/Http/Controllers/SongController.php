@@ -10,6 +10,7 @@ use App\Models\Song;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class SongController extends Controller
 {
@@ -55,15 +56,15 @@ class SongController extends Controller
 	/**
 	 * Update the specified resource in storage.
 	 */
-	public function update(Request $request)
+	public function addSongToPlaylist(Request $request)
 	{
 		$params = $request->all();
 		if (isset($params['song_id']) && isset($params['playlist_id'])) {
-			$song = Song::find($params['song_id']);
-			$song->playlist_id = $params['playlist_id'];
-			$song->save();
-			$playlist = Playlist::find($params['playlist_id']);
-			$playlist->total_song += 1;
+			Library::create([
+				'user_id' => Auth::user()->id,
+				'playlist_id' => $params['playlist_id'],
+				'song_id' => $params['song_id'],
+			]);
 			return ApiResponse::success();
 		} else {
 			return ApiResponse::internalServerError();
@@ -85,8 +86,20 @@ class SongController extends Controller
 	/**
 	 * Remove the specified resource from storage.
 	 */
-	public function destroy(string $id)
+	public function destroy(Request $request)
 	{
-		//
+		$params = $request->all();
+		try {
+			DB::beginTransaction();
+			DB::table('libraries')
+				->where('user_id', Auth::user()->id)
+				->where('playlist_id', $params['playlist_id'])
+				->where('song_id', $params['song_id'])
+				->delete();
+			DB::commit();
+			return ApiResponse::success();
+		} catch (\Throwable $th) {
+			return ApiResponse::internalServerError();
+		}
 	}
 }

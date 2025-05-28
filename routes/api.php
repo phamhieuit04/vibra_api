@@ -53,6 +53,7 @@ Route::middleware('auth:sanctum')->group(function () {
 		Route::get('/list-song', [LibraryController::class, 'listSong']);
 		Route::post('/store-playlist', [LibraryController::class, 'storePlaylist']);
 		Route::post('/update-playlist/{id}', [LibraryController::class, 'updatePlaylist']);
+		Route::get('/list-playlist-song/{id}', [LibraryController::class, 'listPlaylistSong']);
 		Route::get('/destroy-playlist/{id}', [LibraryController::class, 'destroyPlaylist']);
 		Route::get('/destroy-favorite-song/{id}', [LibraryController::class, 'destroyFavoriteSong']);
 		Route::get('/destroy-favorite-artist/{id}', [LibraryController::class, 'destroyFavoriteArtist']);
@@ -72,8 +73,9 @@ Route::middleware('auth:sanctum')->group(function () {
 	Route::group(['prefix' => 'song'], function () {
 		Route::get('/show/{id}', [SongController::class, 'show']);
 		Route::get('/store/{id}', [SongController::class, 'store']);
-		Route::get('/update', [SongController::class, 'update']);
+		Route::get('/add-song-to-playlist', [SongController::class, 'addSongToPlaylist']);
 		Route::get('/update/{id}', [SongController::class, 'updateTotalPlayed']);
+		Route::get('/destroy', [SongController::class, 'destroy']);
 	});
 
 	Route::group(['prefix' => 'playlist'], function () {
