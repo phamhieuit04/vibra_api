@@ -2,9 +2,9 @@
 
 namespace App\Helpers;
 
-use App\Models\Song;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class FileHelper
 {
@@ -77,18 +77,37 @@ class FileHelper
 		}
 	}
 
+	/**
+	 * Get lyrics from song
+	 * @param mixed $song
+	 * @return string[]
+	 */
+	public static function getLyrics($song)
+	{
+		$path = 'uploads/' . self::getNameFromEmail($song->author) . '/lyrics' . $song->lyrics;
+		$file = Storage::disk('public-api')->get($path);
+		$_file = explode(",", str_replace("\n", ",", $file));
+		return $_file;
+	}
+
+	/**
+	 * Get song's property url
+	 * @param mixed $song
+	 * @return null
+	 */
 	public static function getSongUrl($song)
 	{
 		if (!is_null($song)) {
-			$song->song_path = FileHelper::getUrl('songs', $song);
-			$song->lyrics_path = FileHelper::getUrl('lyrics', $song);
-			$song->thumbnail_path = FileHelper::getUrl('thumbnails', $song);
-			$song->author->avatar_path = FileHelper::getAvatar(User::find($song->author_id));
-			$song->category->thumbnail_path = FileHelper::getThumbnail('category', $song->category);
+			$song->song_path = self::getUrl('songs', $song);
+			$song->lyrics_path = self::getUrl('lyrics', $song);
+			$song->thumbnail_path = self::getUrl('thumbnails', $song);
+			$song->author->avatar_path = self::getAvatar(User::find($song->author_id));
+			$song->category->thumbnail_path = self::getThumbnail('category', $song->category);
 			if (!is_null($song->playlist)) {
-				$song->playlist->thumbnail_path = FileHelper::getThumbnail('playlist', $song->playlist);
-				$song->playlist->author->avatar_path = FileHelper::getAvatar($song->playlist->author);
+				$song->playlist->thumbnail_path = self::getThumbnail('playlist', $song->playlist);
+				$song->playlist->author->avatar_path = self::getAvatar($song->playlist->author);
 			}
+			$song->list_lyric = self::getLyrics($song);
 		} else {
 			return null;
 		}
@@ -165,6 +184,7 @@ class FileHelper
 					$song->playlist->thumbnail_path = self::getThumbnail('playlist', $song->playlist);
 					$song->playlist->author->avatar_path = self::getAvatar($song->playlist->author);
 				}
+				$song->list_lyric = self::getLyrics($song);
 			}
 		} else {
 			return null;
