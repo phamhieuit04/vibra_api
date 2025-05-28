@@ -25,6 +25,9 @@ class HomeController extends Controller
 			$albums = Playlist::where('type', 1)
 				->with('author')
 				->get();
+			foreach ($albums as $album) {
+				$album->author->followers = count($album->author->libraries);
+			}
 			FileHelper::getPlaylistsUrl($albums);
 			return ApiResponse::success($albums);
 		} catch (\Throwable $th) {
@@ -40,6 +43,9 @@ class HomeController extends Controller
 				->with('author', 'playlist', 'category', 'playlist.author')
 				->orderBy('total_played', 'DESC')
 				->get();
+			foreach ($songs as $song) {
+				$song->author->followers = count($song->author->libraries);
+			}
 			FileHelper::getSongsUrl($songs);
 			return ApiResponse::success($songs);
 		} catch (\Throwable $th) {
@@ -106,6 +112,7 @@ class HomeController extends Controller
 		// Get selected album's infor
 		try {
 			$album = Playlist::where('id', $id)->with('author')->first();
+			$album->author->followers = count($album->author->libraries);
 			$album->thumbnail_path = FileHelper::getThumbnail('playlist', $album);
 			$album->author->avatar_path = FileHelper::getAvatar();
 			return ApiResponse::success($album);
@@ -119,6 +126,9 @@ class HomeController extends Controller
 		$params = $request->all();
 		try {
 			$artists = User::where('name', 'LIKE', '%' . $params['search-key'] . '%')->get();
+			foreach ($artists as $artist) {
+				$artist->followers = count($artist->libraries);
+			}
 			$songs = Song::where('name', 'LIKE', '%' . $params['search-key'] . '%')
 				->with(['author', 'playlist', 'category'])
 				->get();

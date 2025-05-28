@@ -19,6 +19,7 @@ class ProfileController extends Controller
 	public function listAlbum()
 	{
 		$albums = Playlist::where('author_id', Auth::user()->id)
+			->where('type', 1)
 			->with('author')
 			->get();
 		FileHelper::getPlaylistsUrl($albums);
@@ -90,7 +91,7 @@ class ProfileController extends Controller
 				->with('playlists')
 				->first();
 			Playlist::insert([
-				'name' => 'Playlist của tôi #' . count($user->playlists) + 1,
+				'name' => 'Album của tôi #' . count($user->playlists) + 1,
 				'author_id' => $user->id,
 				'thumbnail' => $user->avatar,
 				'type' => 1,
@@ -117,7 +118,9 @@ class ProfileController extends Controller
 			'updated_at' => Carbon::now()
 		]);
 		$playlist->save();
-		return ApiResponse::success();
+
+		$playlist->thumbnail_path = FileHelper::getThumbnail('playlist', $playlist);
+		return ApiResponse::success($playlist);
 	}
 
 	public function uploadSong(Request $request)

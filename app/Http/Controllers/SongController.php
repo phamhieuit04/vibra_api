@@ -47,6 +47,7 @@ class SongController extends Controller
 		$song = Song::where('id', $id)
 			->with('author', 'playlist', 'category')
 			->first();
+		$song->author->followers = count($song->author->libraries);
 		FileHelper::getSongUrl($song);
 		return ApiResponse::success($song);
 	}

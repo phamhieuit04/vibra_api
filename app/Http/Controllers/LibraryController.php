@@ -22,6 +22,7 @@ class LibraryController extends Controller
 				->withWhereHas('artist')->get();
 			foreach ($libraries as $library) {
 				$library->artist->avatar_path = FileHelper::getAvatar($library->artist);
+				$library->artist->followers = count($library->artist->libraries);
 			}
 			return ApiResponse::success($libraries);
 		} catch (\Throwable $th) {
