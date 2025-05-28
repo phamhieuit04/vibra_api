@@ -9,10 +9,16 @@ use function Laravel\Prompts\select;
 class PayOSService
 {
 	private $payOS;
+
 	public function __construct()
 	{
-		$this->payOS = new PayOS(env('CLIENT_ID'), env('API_KEY'), env('CHECKSUM_KEY'));
+		$this->payOS = new PayOS(
+			env('PAYOS_CLIENT_ID'),
+			env('PAYOS_API_KEY'),
+			env('PAYOS_CHECKSUM_KEY')
+		);
 	}
+
 	public static function createPaymentLink(Bill $bill)
 	{
 		$self = new self();
