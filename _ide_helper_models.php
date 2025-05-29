@@ -107,6 +107,27 @@ namespace App\Models{
  *
  * @property int $id
  * @property int $user_id
+ * @property string $token
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @method static \Illuminate\Database\Eloquent\Builder|DeviceToken newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|DeviceToken newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|DeviceToken query()
+ * @method static \Illuminate\Database\Eloquent\Builder|DeviceToken whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|DeviceToken whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|DeviceToken whereToken($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|DeviceToken whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|DeviceToken whereUserId($value)
+ */
+	class DeviceToken extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * 
+ *
+ * @property int $id
+ * @property int $user_id
  * @property int|null $playlist_id
  * @property int|null $artist_id
  * @property int|null $song_id
