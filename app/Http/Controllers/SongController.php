@@ -100,6 +100,10 @@ class SongController extends Controller
 				->where('song_id', $params['song_id'])
 				->delete();
 			DB::commit();
+
+			$playlist = Playlist::find($params['playlist_id']);
+			$playlist->total_song = $playlist->total_song - 1;
+			$playlist->save();
 			return ApiResponse::success();
 		} catch (\Throwable $th) {
 			return ApiResponse::internalServerError();
