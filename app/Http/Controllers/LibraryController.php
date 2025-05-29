@@ -8,6 +8,7 @@ use App\Models\Library;
 use App\Models\Playlist;
 use App\Models\Song;
 use App\Models\User;
+use Arr;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -37,15 +38,18 @@ class LibraryController extends Controller
 			$libraries = Library::where('user_id', Auth::user()->id)
 				->withWhereHas('playlist', function ($query) use ($params) {
 					$query->where('type', $params['type']);
-				})
-				->with('playlist.author', 'song')
-				->get();
+				})->get();
+			$playlists = [];
 			foreach ($libraries as $library) {
 				$library->playlist->thumbnail_path = FileHelper::getThumbnail('playlist', $library->playlist);
-				$library->playlist->author->avatar_path = FileHelper::getAvatar($library->playlist->author);
-				FileHelper::getSongUrl($library->song);
+				// $library->playlist->author->avatar_path = FileHelper::getAvatar($library->playlist->author);
+				// FileHelper::getSongUrl($library->song);
+
+				if (!in_array($library->playlist, $playlists)) {
+					array_push($playlists, $library->playlist);
+				}
 			}
-			return ApiResponse::success($libraries);
+			return ApiResponse::success($playlists);
 		} catch (\Throwable $th) {
 			return ApiResponse::dataNotfound();
 		}
@@ -55,6 +59,7 @@ class LibraryController extends Controller
 	{
 		try {
 			$libraries = Library::where('user_id', Auth::user()->id)
+				->where('playlist_id', null)
 				->withWhereHas('song')->get();
 			foreach ($libraries as $library) {
 				FileHelper::getSongUrl($library->song);
