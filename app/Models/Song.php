@@ -45,4 +45,9 @@ class Song extends Model
 	{
 		return $this->belongsTo(Category::class, 'category_id', 'id');
 	}
+
+	public function blocked()
+	{
+		return $this->hasOne(Song::class, 'song_id', 'id');
+	}
 }

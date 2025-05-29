@@ -23,4 +23,9 @@ class Blocked extends Model
 		'created_at' => 'timestamp',
 		'updated_at' => 'timestamp'
 	];
+
+	public function song()
+	{
+		return $this->hasOne(Song::class, 'id', 'song_id');
+	}
 }

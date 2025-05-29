@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Helpers\ApiResponse;
 use App\Helpers\FileHelper;
+use App\Models\Blocked;
 use App\Models\Category;
 use App\Models\Library;
 use App\Models\Playlist;
@@ -12,6 +13,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
+use PhpParser\Node\Stmt\Block;
 
 class HomeController extends Controller
 {
@@ -37,10 +39,19 @@ class HomeController extends Controller
 
 	public function listSong()
 	{
-		// Get all $songs
+		// Get all $songs which is not blocked by user
 		try {
+			$blocked = Blocked::where('user_id', Auth::id())
+				->whereNotNull('song_id')
+				->pluck('song_id');
 			$songs = Song::whereStatus(1)
-				->with('author', 'playlist', 'category', 'playlist.author')
+				->whereNotIn('id', $blocked)
+				->with([
+					'author',
+					'playlist',
+					'category',
+					'playlist.author'
+				])
 				->orderBy('total_played', 'DESC')
 				->get();
 			foreach ($songs as $song) {
@@ -57,7 +68,10 @@ class HomeController extends Controller
 	{
 		// Get all artists
 		try {
-			$artists = User::all();
+			$blocked = Blocked::where('user_id', Auth::id())
+				->whereNotNull('artist_id')
+				->pluck('artist_id');
+			$artists = User::whereNotIn('id', $blocked)->get();
 			foreach ($artists as $artist) {
 				$artist->avatar_path = FileHelper::getAvatar($artist);
 				$artist->followers = count($artist->libraries);
