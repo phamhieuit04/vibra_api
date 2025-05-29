@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Helpers\ApiResponse;
 use App\Helpers\FileHelper;
 use App\Http\Resources\AuthResource;
+use App\Models\DeviceToken;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -29,7 +30,16 @@ class FirebaseController extends Controller
 						$user->save();
 					}
 					$user->token = $user->createToken($user->email)->plainTextToken;
+					$user->device_token = $params['device_token'];
 					$user->avatar_path = FileHelper::getAvatar($user);
+					$device_token = DeviceToken::where('user_id', $user->id)
+						->where('token', $params['device_token'])->first();
+					if (is_null($device_token)) {
+						DeviceToken::create([
+							'user_id' => $user->id,
+							'token' => $params['device_token']
+						]);
+					}
 					return ApiResponse::success($user);
 				} else {
 					$user = User::create([
@@ -40,11 +50,20 @@ class FirebaseController extends Controller
 						'avatar' => '/default.jpg'
 					]);
 					$user->token = $user->createToken($user->email)->plainTextToken;
+					$user->device_token = $params['device_token'];
 					$user->avatar_path = FileHelper::getAvatar($user);
 					Storage::disk('public-api')->copy(
 						'assets/avatars/default.jpg',
 						'uploads/' . FileHelper::getNameFromEmail($user) . '/avatars/default.jpg'
 					);
+					$device_token = DeviceToken::where('user_id', $user->id)
+						->where('token', $params['device_token'])->first();
+					if (is_null($device_token)) {
+						DeviceToken::create([
+							'user_id' => $user->id,
+							'token' => $params['device_token']
+						]);
+					}
 					return ApiResponse::success($user);
 				}
 			} catch (\Throwable $th) {

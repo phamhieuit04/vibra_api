@@ -2,9 +2,37 @@
 
 namespace App\Services;
 
+use App\Helpers\ApiResponse;
 use Illuminate\Http\Request;
+use Kreait\Firebase\Messaging\CloudMessage;
+use Kreait\Firebase\Messaging\Notification;
 
 class FCMService
 {
-	// TODO: add function to send firebase cloud messaging all user when followed artist upload song
+	private $messaging;
+
+	public function __construct()
+	{
+		$this->messaging = app('firebase.messaging');
+	}
+
+	public static function sendNotifyNewSong($user)
+	{
+		$self = new self();
+		if (!is_null($user)) {
+			try {
+				$message = CloudMessage::new()
+					->withNotification(
+						Notification::create('Day la tieu de', 'Day la body')
+					)
+					->toToken($user->device_token);
+				$self->messaging->send($message);
+				return true;
+			} catch (\Throwable $th) {
+				return false;
+			}
+		} else {
+			return ApiResponse::internalServerError();
+		}
+	}
 }
