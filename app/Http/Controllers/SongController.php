@@ -65,6 +65,9 @@ class SongController extends Controller
 				'playlist_id' => $params['playlist_id'],
 				'song_id' => $params['song_id'],
 			]);
+			$playlist = Playlist::find($params['playlist_id']);
+			$playlist->total_song = $playlist->total_song + 1;
+			$playlist->save();
 			return ApiResponse::success();
 		} else {
 			return ApiResponse::internalServerError();
