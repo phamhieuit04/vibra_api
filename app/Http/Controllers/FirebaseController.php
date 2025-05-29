@@ -7,8 +7,10 @@ use App\Helpers\FileHelper;
 use App\Http\Resources\AuthResource;
 use App\Models\DeviceToken;
 use App\Models\User;
+use App\Services\FCMService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
@@ -70,6 +72,26 @@ class FirebaseController extends Controller
 				return ApiResponse::internalServerError();
 			}
 		} else {
+			return ApiResponse::internalServerError();
+		}
+	}
+
+	public function notifyNewSong(Request $request)
+	{
+		$params = $request->all();
+		$user = Auth::user();
+		$user->device_token = DeviceToken::where('user_id', $user->id)->first()->token;
+		try {
+			if (!is_null($user) && !is_null($user->device_token)) {
+				$title = $params['artist_name'] . ' đã phát hành 1 bài hát mới!';
+				$body = 'Nội dung: ' . $params['song_description'];
+				$imageUrl = $params['thumbnail_path'];
+				FCMService::sendNotifyNewSong($user, $title, $body, $imageUrl);
+				return ApiResponse::success();
+			} else {
+				return ApiResponse::dataNotfound();
+			}
+		} catch (\Throwable $th) {
 			return ApiResponse::internalServerError();
 		}
 	}

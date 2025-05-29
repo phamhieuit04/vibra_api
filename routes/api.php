@@ -36,6 +36,7 @@ Route::post('/signup', [AuthController::class, 'signup']);
 // Firebase
 Route::group(['prefix' => 'firebase'], function () {
 	Route::get('/auth', [FirebaseController::class, 'authentication']);
+	Route::get('/notify-new-song', [FirebaseController::class, 'notifyNewSong'])->middleware('auth:sanctum');
 });
 
 // Send verify email
