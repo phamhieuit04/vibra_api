@@ -8,25 +8,22 @@ use App\Models\User;
 use App\Services\GoogleDriveService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class GoogleDriveController extends Controller
 {
 	public function syncAvatar()
 	{
 		try {
-			$user = User::where('id', Auth::user()->id)->first();
-			// TODO: fix upload file with server path
-			$avatarUrl = FileHelper::getAvatar($user);
-			$fileName = $user->avatar;
-			if (!file_exists($avatarUrl)) {
-				return [
-					'code' => 204,
-					'status' => 'success',
-					'message' => 'File not found'
-				];
+			$user = Auth::user();
+			$path = 'uploads/' . FileHelper::getNameFromEmail($user) . '/avatars' . $user->avatar;
+			$filePath = Storage::disk('public-api')->path($path);
+			if (!file_exists($filePath)) {
+				return ApiResponse::dataNotfound();
+			} else {
+				GoogleDriveService::uploadFile($filePath, substr($user->avatar, 1));
+				return ApiResponse::success();
 			}
-			GoogleDriveService::uploadFile($avatarUrl, $fileName);
-			return ApiResponse::success();
 		} catch (\Throwable $th) {
 			return ApiResponse::internalServerError();
 		}
