@@ -3,16 +3,14 @@
 use App\Http\Controllers\ArtistController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoryController;
-use App\Http\Controllers\DemoController;
 use App\Http\Controllers\FirebaseController;
+use App\Http\Controllers\GoogleDriveController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LibraryController;
 use App\Http\Controllers\PlaylistController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SongController;
-use App\Http\Controllers\UserController;
 use App\Http\Controllers\PaymentController;
-use App\Http\Controllers\GoogleDriverController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -111,9 +109,9 @@ Route::middleware('auth:sanctum')->group(function () {
 		Route::get('/create-bill', [PaymentController::class, 'createBill']);
 	});
 
-	Route::group(['prefix' => 'google-driver'], function () {
-		Route::get('/sync-song', [GoogleDriverController::class, 'syncSong']);
-		Route::get('/sync-avatar', [GoogleDriverController::class, 'syncAvatar']);
+	Route::group(['prefix' => 'google-drive'], function () {
+		Route::get('/sync-song', [GoogleDriveController::class, 'syncSong']);
+		Route::get('/sync-avatar', [GoogleDriveController::class, 'syncAvatar']);
 	});
 
 	Route::get('/logout', [AuthController::class, 'logout']);
