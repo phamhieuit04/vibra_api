@@ -16,6 +16,14 @@ class FCMService
 		$this->messaging = app('firebase.messaging');
 	}
 
+	/**
+	 * Service method to send a firebase cloud messaging to user.
+	 * @param string $device_token
+	 * @param string $title 'title' for notify.
+	 * @param string $body 'body' for notify.
+	 * @param string $imageUrl 'image url' for notify, default = null.
+	 * @return bool|mixed|\Illuminate\Http\JsonResponse
+	 */
 	public static function sendNotifyNewSong(string $device_token, string $title, string $body, string $imageUrl = null)
 	{
 		$self = new self();
