@@ -64,4 +64,14 @@ class User extends Authenticatable implements MustVerifyEmail
 	{
 		return $this->hasMany(Blocked::class, 'artist_id', 'id');
 	}
+
+	public function deviceTokens()
+	{
+		return $this->hasMany(DeviceToken::class, 'user_id', 'id');
+	}
+
+	public function userLibraries()
+	{
+		return $this->hasMany(Library::class, 'user_id', 'id');
+	}
 }

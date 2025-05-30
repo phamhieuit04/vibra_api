@@ -16,10 +16,10 @@ class FCMService
 		$this->messaging = app('firebase.messaging');
 	}
 
-	public static function sendNotifyNewSong($user, string $title, string $body, string $imageUrl = null)
+	public static function sendNotifyNewSong(string $device_token, string $title, string $body, string $imageUrl = null)
 	{
 		$self = new self();
-		if (!is_null($user) && !is_null($user->device_token)) {
+		if (!is_null($device_token) && !empty($device_token)) {
 			try {
 				$message = CloudMessage::new()->withNotification(
 					Notification::create(
@@ -27,7 +27,7 @@ class FCMService
 						$body,
 						$imageUrl
 					)
-				)->toToken($user->device_token);
+				)->toToken($device_token);
 				$self->messaging->send($message);
 				return true;
 			} catch (\Throwable $th) {
