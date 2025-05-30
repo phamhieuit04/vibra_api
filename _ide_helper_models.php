@@ -106,9 +106,19 @@ namespace App\Models{
 /**
  * 
  *
+ * @property int $id
+ * @property int $user_id
+ * @property string $token
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
  * @method static \Illuminate\Database\Eloquent\Builder|DeviceToken newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|DeviceToken newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|DeviceToken query()
+ * @method static \Illuminate\Database\Eloquent\Builder|DeviceToken whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|DeviceToken whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|DeviceToken whereToken($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|DeviceToken whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|DeviceToken whereUserId($value)
  */
 	class DeviceToken extends \Eloquent {}
 }
@@ -232,6 +242,8 @@ namespace App\Models{
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Blocked> $blocked
  * @property-read int|null $blocked_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\DeviceToken> $deviceTokens
+ * @property-read int|null $device_tokens_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Library> $libraries
  * @property-read int|null $libraries_count
  * @property-read \Illuminate\Notifications\DatabaseNotificationCollection<int, \Illuminate\Notifications\DatabaseNotification> $notifications
@@ -240,6 +252,8 @@ namespace App\Models{
  * @property-read int|null $playlists_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \Laravel\Sanctum\PersonalAccessToken> $tokens
  * @property-read int|null $tokens_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Library> $userLibraries
+ * @property-read int|null $user_libraries_count
  * @method static \Database\Factories\UserFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder|User newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|User newQuery()

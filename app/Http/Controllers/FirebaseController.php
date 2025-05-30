@@ -6,6 +6,8 @@ use App\Helpers\ApiResponse;
 use App\Helpers\FileHelper;
 use App\Http\Resources\AuthResource;
 use App\Models\DeviceToken;
+use App\Models\Library;
+use App\Models\Song;
 use App\Models\User;
 use App\Services\FCMService;
 use Illuminate\Http\Request;
@@ -79,18 +81,27 @@ class FirebaseController extends Controller
 	public function notifyNewSong(Request $request)
 	{
 		$params = $request->all();
-		$user = Auth::user();
-		$user->device_token = DeviceToken::where('user_id', $user->id)->first()->token;
+		$artist = User::find($params['artist_id']);
+		$song = Song::find($params['song_id']);
+
+		$title = $artist->name . ' đã phát hành 1 bài hát mới!';
+		$body = 'Nội dung: ' . $song->description;
+		$imageUrl = FileHelper::getUrl('thumbnails', $song);
+
 		try {
-			if (!is_null($user) && !is_null($user->device_token)) {
-				$title = $params['artist_name'] . ' đã phát hành 1 bài hát mới!';
-				$body = 'Nội dung: ' . $params['song_description'];
-				$imageUrl = $params['thumbnail_path'];
-				FCMService::sendNotifyNewSong($user, $title, $body, $imageUrl);
-				return ApiResponse::success();
-			} else {
-				return ApiResponse::dataNotfound();
+			$users = User::withWhereHas('deviceTokens')
+				->withWhereHas('userLibraries')
+				->get();
+			$device_tokens = collect([]);
+			$users->each(function ($user) use ($device_tokens) {
+				foreach ($user->deviceTokens as $device_token) {
+					$device_tokens->push($device_token->token);
+				}
+			});
+			foreach ($device_tokens as $token) {
+				FCMService::sendNotifyNewSong($token, $title, $body, $imageUrl);
 			}
+			return ApiResponse::success();
 		} catch (\Throwable $th) {
 			return ApiResponse::internalServerError();
 		}
