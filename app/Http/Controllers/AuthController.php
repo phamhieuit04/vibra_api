@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Helpers\ApiResponse;
 use App\Helpers\FileHelper;
 use App\Http\Resources\AuthResource;
+use App\Models\DeviceToken;
 use App\Models\User;
 use App\Notifications\VerifyEmail;
 use Illuminate\Auth\Events\Registered;
@@ -37,20 +38,20 @@ class AuthController extends Controller
 	public function signup(Request $request)
 	{
 		$params = $request->all();
-		$user = User::create([
-			'name' => explode('@', $params['email'])[0],
-			'email' => $params['email'],
-			'password' => Hash::make($params['password']),
-			'avatar' => '/default.jpg',
-			'created_at' => Carbon::now(),
-			'updated_at' => Carbon::now()
-		]);
-		Storage::disk('public-api')->copy(
-			'assets/avatars/default.jpg',
-			'uploads/' . FileHelper::getNameFromEmail($user) . '/avatars/default.jpg'
-		);
-		return ApiResponse::success();
 		try {
+			$user = User::create([
+				'name' => explode('@', $params['email'])[0],
+				'email' => $params['email'],
+				'password' => Hash::make($params['password']),
+				'avatar' => '/default.jpg',
+				'created_at' => Carbon::now(),
+				'updated_at' => Carbon::now()
+			]);
+			Storage::disk('public-api')->copy(
+				'assets/avatars/default.jpg',
+				'uploads/' . FileHelper::getNameFromEmail($user) . '/avatars/default.jpg'
+			);
+			return ApiResponse::success();
 		} catch (\Throwable $th) {
 			return ApiResponse::internalServerError();
 		}
@@ -60,6 +61,7 @@ class AuthController extends Controller
 	{
 		try {
 			Auth::user()->tokens()->delete();
+			DeviceToken::where('user_id', Auth::user()->id)->delete();
 			return ApiResponse::success();
 		} catch (\Throwable $th) {
 			return ApiResponse::internalServerError();
