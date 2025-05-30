@@ -12,6 +12,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SongController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\GoogleDriverController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -108,6 +109,11 @@ Route::middleware('auth:sanctum')->group(function () {
 
 	Route::group(['prefix' => 'payment'], function () {
 		Route::get('/create-bill', [PaymentController::class, 'createBill']);
+	});
+
+	Route::group(['prefix' => 'google-driver'], function () {
+		Route::get('/sync-song', [GoogleDriverController::class, 'syncSong']);
+		Route::get('/sync-avatar', [GoogleDriverController::class, 'syncAvatar']);
 	});
 
 	Route::get('/logout', [AuthController::class, 'logout']);
