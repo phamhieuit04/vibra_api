@@ -65,6 +65,7 @@ namespace App\Models{
  * @property int|null $artist_id
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\Song|null $song
  * @method static \Illuminate\Database\Eloquent\Builder|Blocked newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Blocked newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Blocked query()
@@ -105,19 +106,9 @@ namespace App\Models{
 /**
  * 
  *
- * @property int $id
- * @property int $user_id
- * @property string $token
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
  * @method static \Illuminate\Database\Eloquent\Builder|DeviceToken newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|DeviceToken newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|DeviceToken query()
- * @method static \Illuminate\Database\Eloquent\Builder|DeviceToken whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|DeviceToken whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|DeviceToken whereToken($value)
- * @method static \Illuminate\Database\Eloquent\Builder|DeviceToken whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|DeviceToken whereUserId($value)
  */
 	class DeviceToken extends \Eloquent {}
 }
@@ -201,6 +192,7 @@ namespace App\Models{
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\User $author
+ * @property-read Song|null $blocked
  * @property-read \App\Models\Category $category
  * @property-read \App\Models\Playlist|null $playlist
  * @method static \Illuminate\Database\Eloquent\Builder|Song newModelQuery()
@@ -238,6 +230,8 @@ namespace App\Models{
  * @property string $avatar
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Blocked> $blocked
+ * @property-read int|null $blocked_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Library> $libraries
  * @property-read int|null $libraries_count
  * @property-read \Illuminate\Notifications\DatabaseNotificationCollection<int, \Illuminate\Notifications\DatabaseNotification> $notifications
