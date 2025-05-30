@@ -62,14 +62,14 @@ class GoogleDriveService
 	{
 		$self = new self();
 		try {
-			$fileMetadata = new DriveFile([
+			$folderMetadata = new DriveFile([
 				'name' => $folderName,
 				'mimeType' => 'application/vnd.google-apps.folder'
 			]);
-			$file = $self->driverService->files->create($fileMetadata, [
+			$folder = $self->driverService->files->create($folderMetadata, [
 				'fields' => 'id'
 			]);
-			return $file->id;
+			return $folder->id;
 		} catch (\Throwable $th) {
 			return false;
 		}
