@@ -20,10 +20,13 @@ class GoogleDriveController extends Controller
 			$filePath = Storage::disk('public-api')->path($path);
 			if (!file_exists($filePath)) {
 				return ApiResponse::dataNotfound();
-			} else {
-				GoogleDriveService::uploadFile($filePath, substr($user->avatar, 1));
-				return ApiResponse::success();
 			}
+			if (filesize($filePath) >= 5 * 1024 * 1024) {
+				GoogleDriveService::chunkFileUpload($filePath, substr($user->avatar, 1));
+			} else {
+				GoogleDriveService::uploadSmallFile($filePath, substr($user->avatar, 1));
+			}
+			return ApiResponse::success();
 		} catch (\Throwable $th) {
 			return ApiResponse::internalServerError();
 		}

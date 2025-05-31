@@ -3,46 +3,48 @@
 namespace App\Services;
 
 use Google\Client;
+use Google\Http\MediaFileUpload;
 use Google\Service\Drive;
 use Google\Service\Drive\DriveFile;
 use Illuminate\Support\Facades\Log;
+use phpDocumentor\Reflection\Types\Self_;
 
 class GoogleDriveService
 {
 	private $client;
-	private $driverService;
+	private $driveService;
 
 	/**
 	 * Construct method init setting Google client.
 	 *
 	 * Auth config file from storage path.
-	 * Scope DRIVE_FILE
+	 * Scope DRIVE
 	 */
 	public function __construct()
 	{
 		$this->client = new Client();
-		$this->client->setAuthConfig(storage_path('google_credentical.json'));
-		$this->client->addScope(Drive::DRIVE_FILE);
-		$this->driverService = new Drive($this->client);
+		$this->client->setAuthConfig(storage_path(env('GOOGLE_DRIVE_CREDENTICALS')));
+		$this->client->addScope(Drive::DRIVE);
+		$this->driveService = new Drive($this->client);
 	}
 
 	/**
-	 * * Service method upload file to Google Drive.
+	 * * Service method for upload file to Google Drive.
 	 *
 	 * @param string $filePath 'path' to the file saved in the system.
 	 * @param string $fileName 'name' of the file stored in the database.
 	 * @param mixed $folderId 'id' of the folder you want to upload file to, default = null.
 	 */
-	public static function uploadFile(string $filePath, string $fileName, $folderId = null)
+	public static function uploadSmallFile(string $filePath, string $fileName, $folderId = null)
 	{
 		$self = new self();
 		$fileMetadata = new DriveFile([
 			'name' => $fileName,
-			'parents' => [is_null($folderId) ? env('GOOGLE_DRIVE_FOLDER_ID') : $folderId]
+			'parents' => [is_null($folderId) ? env('GOOGLE_DRIVE_ROOT_FOLDER_ID') : $folderId]
 		]);
 		$content = file_get_contents($filePath);
 		try {
-			$file = $self->driverService->files->create($fileMetadata, [
+			$file = $self->driveService->files->create($fileMetadata, [
 				'data' => $content,
 				'mimeType' => mime_content_type($filePath),
 				'uploadType' => 'multipart',
@@ -55,18 +57,90 @@ class GoogleDriveService
 	}
 
 	/**
+	 * Support method for upload big file to Google Drive
+	 * 
+	 * @param string $filePath
+	 * @param string $fileName
+	 * @param mixed $folderId
+	 * @return bool
+	 */
+	public static function chunkFileUpload(string $filePath, string $fileName, $folderId = null)
+	{
+		$self = new self();
+		try {
+			$fileMetadata = new DriveFile([
+				'name' => $fileName,
+				'parents' => [is_null($folderId) ? env('GOOGLE_DRIVE_ROOT_FOLDER_ID') : $folderId]
+			]);
+			$chunkSizeBytes = 1 * 1024 * 1024;
+			$self->client->setDefer(true);
+			$request = $self->driveService->files->create($fileMetadata);
+			$mimeType = mime_content_type($filePath);
+			$content = file_get_contents($filePath);
+
+			$media = new MediaFileUpload(
+				$self->client,
+				$request,
+				$mimeType,
+				$content,
+				true,
+				$chunkSizeBytes
+			);
+			$media->setFileSize(filesize($filePath));
+			$status = false;
+			$handle = fopen($filePath, "rb");
+			while (!$status && !feof($handle)) {
+				$chunk = $self->readFileChunk($handle, $chunkSizeBytes);
+				$status = $media->nextChunk($chunk);
+			}
+			$result = false;
+			if ($status != false) {
+				$result = $status;
+			}
+			fclose($handle);
+			return true;
+		} catch (\Throwable $th) {
+			return false;
+		}
+	}
+
+	/**
+	 * Support method for chunkFileUpload
+	 * 
+	 * @param mixed $handle
+	 * @param mixed $chunkSize
+	 * @return string
+	 */
+	function readFileChunk($handle, $chunkSize)
+	{
+		$byteCount = 0;
+		$giantChunk = "";
+		while (!feof($handle)) {
+			$chunk = fread($handle, 8192);
+			$byteCount += strlen($chunk);
+			$giantChunk .= $chunk;
+			if ($byteCount >= $chunkSize) {
+				return $giantChunk;
+			}
+		}
+		return $giantChunk;
+	}
+
+	/**
 	 * Service method to create folder in Google Drive.
+	 * 
 	 * @param string $folderName 'name' of the folder to create in Google Drive
 	 */
-	public static function createFolder(string $folderName)
+	public static function createFolder(string $folderName, $folderId = null)
 	{
 		$self = new self();
 		try {
 			$folderMetadata = new DriveFile([
 				'name' => $folderName,
-				'mimeType' => 'application/vnd.google-apps.folder'
+				'mimeType' => 'application/vnd.google-apps.folder',
+				'parents' => [is_null($folderId) ? env('GOOGLE_DRIVE_ROOT_FOLDER_ID') : $folderId]
 			]);
-			$folder = $self->driverService->files->create($folderMetadata, [
+			$folder = $self->driveService->files->create($folderMetadata, [
 				'fields' => 'id'
 			]);
 			return $folder->id;
