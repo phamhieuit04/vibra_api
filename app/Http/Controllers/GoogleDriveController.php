@@ -16,17 +16,44 @@ class GoogleDriveController extends Controller
 	{
 		try {
 			$user = Auth::user();
-			$path = 'uploads/' . FileHelper::getNameFromEmail($user) . '/avatars' . $user->avatar;
+			$userName = FileHelper::getNameFromEmail($user);
+			$path = 'uploads/' . $userName . '/avatars' . $user->avatar;
+
 			$filePath = Storage::disk('public-api')->path($path);
 			if (!file_exists($filePath)) {
 				return ApiResponse::dataNotfound();
 			}
-			if (filesize($filePath) >= 5 * 1024 * 1024) {
-				GoogleDriveService::chunkFileUpload($filePath, substr($user->avatar, 1));
+
+			$userFolder = GoogleDriveService::findFolderByName($userName);
+			if (!$userFolder) {
+				$userFolderId = GoogleDriveService::createFolder($userName);
 			} else {
-				GoogleDriveService::uploadSmallFile($filePath, substr($user->avatar, 1));
+				$userFolderId = is_object($userFolder) ? $userFolder->getId() : $userFolder['id'];
 			}
-			return ApiResponse::success();
+
+			if (!$userFolderId) {
+				return ApiResponse::internalServerError();
+			}
+
+			$avatarsFolder = GoogleDriveService::findFolderByName('avatars', $userFolderId);
+			if (!$avatarsFolder) {
+				$avatarsFolderId = GoogleDriveService::createFolder('avatars', $userFolderId);
+			} else {
+				$avatarsFolderId = is_object($avatarsFolder) ? $avatarsFolder->getId() : $avatarsFolder['id'];
+			}
+
+			if (!$avatarsFolderId) {
+				return ApiResponse::internalServerError();
+			}
+
+			$fileName = substr($user->avatar, 1);
+			if (filesize($filePath) >= 5 * 1024 * 1024) {
+				GoogleDriveService::chunkFileUpload($filePath, $fileName, $avatarsFolderId);
+			} else {
+				GoogleDriveService::uploadSmallFile($filePath, $fileName, $avatarsFolderId);
+			}
+
+			return ApiResponse::success($userFolder);
 		} catch (\Throwable $th) {
 			return ApiResponse::internalServerError();
 		}

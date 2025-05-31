@@ -6,6 +6,7 @@ use Google\Client;
 use Google\Http\MediaFileUpload;
 use Google\Service\Drive;
 use Google\Service\Drive\DriveFile;
+use Google\Service\Exception;
 use Illuminate\Support\Facades\Log;
 use phpDocumentor\Reflection\Types\Self_;
 
@@ -146,6 +147,46 @@ class GoogleDriveService
 			return $folder->id;
 		} catch (\Throwable $th) {
 			return false;
+		}
+	}
+
+	public static function findFolderByName(string $name, $parentId = null)
+	{
+		try {
+			$self = new self();
+
+			$query = "mimeType='application/vnd.google-apps.folder' and name = '{$name}'";
+			if (!is_null($parentId)) {
+				$query .= " and '{$parentId}' in parents";
+			}
+
+			$response = $self->driveService->files->listFiles([
+				'q' => $query,
+				'spaces' => 'drive',
+				'fields' => 'files(id, name)',
+				'pageSize' => 1,
+			]);
+
+			$folders = $response->getFiles();
+
+			if (count($folders) > 0) {
+				$folder = $folders[0];
+
+				// Kiểm tra chắc chắn có ID
+				if (is_object($folder) && method_exists($folder, 'getId')) {
+					return $folder;
+				}
+
+				if (is_array($folder) && isset($folder['id'])) {
+					return (object) $folder;
+				}
+			}
+
+			return null;
+
+		} catch (\Throwable $th) {
+			echo "Error: " . $th->getMessage();
+			return null;
 		}
 	}
 }
