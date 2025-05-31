@@ -11,6 +11,9 @@ class FCMService
 {
 	private $messaging;
 
+	/**
+	 * Construct method init setting for Firebase Messaging.
+	 */
 	public function __construct()
 	{
 		$this->messaging = app('firebase.messaging');
@@ -29,20 +32,17 @@ class FCMService
 		$self = new self();
 		if (!is_null($device_token) && !empty($device_token)) {
 			try {
-				$message = CloudMessage::new()->withNotification(
-					Notification::create(
-						$title,
-						$body,
-						$imageUrl
-					)
-				)->toToken($device_token);
+				$notification = Notification::create($title, $body, $imageUrl);
+				$message = CloudMessage::new()
+					->withNotification($notification)
+					->toToken($device_token);
 				$self->messaging->send($message);
 				return true;
 			} catch (\Throwable $th) {
 				return false;
 			}
 		} else {
-			return ApiResponse::internalServerError();
+			return false;
 		}
 	}
 }
