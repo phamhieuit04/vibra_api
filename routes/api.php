@@ -41,12 +41,14 @@ Route::group(['prefix' => 'firebase'], function () {
 
 // Send verify email
 Route::group(['prefix' => 'email'], function () {
-	Route::get('/verify', [MailController::class, 'sendVerify'])->middleware('auth:sanctum');
+	Route::middleware('auth:sanctum')->group(function () {
+		Route::get('/verify', [MailController::class, 'sendVerify']);
+		Route::get('/send-greeting', [MailController::class, 'sendGreeting']);
+		Route::get('/send-appreciation', [MailController::class, 'sendAppreciation']);
+	});
 	Route::get('/verify/{id}/{hash}', [MailController::class, 'verifyHandler'])
 		->middleware('signed')
 		->name('verification.verify');
-	Route::get('/send-greeting', [MailController::class, 'sendGreeting'])
-		->middleware('auth:sanctum');
 });
 
 Route::middleware('auth:sanctum')->group(function () {
@@ -113,8 +115,7 @@ Route::middleware('auth:sanctum')->group(function () {
 	});
 
 	Route::group(['prefix' => 'google-drive'], function () {
-		Route::get('/sync-song', [GoogleDriveController::class, 'syncSong']);
-		Route::get('/sync-avatar', [GoogleDriveController::class, 'syncAvatar']);
+		Route::get('/sync-files', [GoogleDriveController::class, 'syncFiles']);
 	});
 
 	Route::get('/logout', [AuthController::class, 'logout']);
