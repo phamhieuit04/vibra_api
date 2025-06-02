@@ -42,10 +42,10 @@ Route::group(['prefix' => 'firebase'], function () {
 // Send verify email
 Route::group(['prefix' => 'email'], function () {
 	Route::middleware('auth:sanctum')->group(function () {
-		Route::get('/verify', [MailController::class, 'sendVerify']);
 		Route::get('/send-greeting', [MailController::class, 'sendGreeting']);
 		Route::get('/send-appreciation', [MailController::class, 'sendAppreciation']);
 	});
+	Route::get('/verify', [MailController::class, 'sendVerify']);
 	Route::get('/verify/{id}/{hash}', [MailController::class, 'verifyHandler'])
 		->middleware('signed')
 		->name('verification.verify');
