@@ -39,4 +39,13 @@ class ApiResponse
 			'message' => 'Unauthorized.'
 		]);
 	}
+
+	public static function forbidden()
+	{
+		return response()->json([
+			'code' => 403,
+			'data' => null,
+			'message' => 'Forbidden'
+		]);
+	}
 }
