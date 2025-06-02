@@ -51,7 +51,7 @@ class AuthController extends Controller
 				'assets/avatars/default.jpg',
 				'uploads/' . FileHelper::getNameFromEmail($user) . '/avatars/default.jpg'
 			);
-			return ApiResponse::success();
+			return ApiResponse::success($user);
 		} catch (\Throwable $th) {
 			return ApiResponse::internalServerError();
 		}
@@ -66,27 +66,5 @@ class AuthController extends Controller
 		} catch (\Throwable $th) {
 			return ApiResponse::internalServerError();
 		}
-	}
-
-	public function sendVerify()
-	{
-		try {
-			event(new Registered(Auth::user()));
-			return ApiResponse::success();
-		} catch (\Throwable $th) {
-			return ApiResponse::internalServerError();
-		}
-	}
-
-	public function verifyHandler($id, $hash)
-	{
-		$user = User::findOrFail($id);
-		if (hash_equals($hash, sha1($user->getEmailForVerification()))) {
-			if (!$user->hasVerifiedEmail()) {
-				$user->markEmailAsVerified();
-				return redirect()->away('http://localhost:5173/verify');
-			}
-		}
-		return ApiResponse::internalServerError();
 	}
 }

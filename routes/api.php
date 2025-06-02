@@ -7,6 +7,7 @@ use App\Http\Controllers\FirebaseController;
 use App\Http\Controllers\GoogleDriveController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LibraryController;
+use App\Http\Controllers\MailController;
 use App\Http\Controllers\PlaylistController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SongController;
@@ -40,10 +41,12 @@ Route::group(['prefix' => 'firebase'], function () {
 
 // Send verify email
 Route::group(['prefix' => 'email'], function () {
-	Route::get('/verify', [AuthController::class, 'sendVerify'])->middleware('auth:sanctum');
-	Route::get('/verify/{id}/{hash}', [AuthController::class, 'verifyHandler'])
+	Route::get('/verify', [MailController::class, 'sendVerify'])->middleware('auth:sanctum');
+	Route::get('/verify/{id}/{hash}', [MailController::class, 'verifyHandler'])
 		->middleware('signed')
 		->name('verification.verify');
+	Route::get('/send-greeting', [MailController::class, 'sendGreeting'])
+		->middleware('auth:sanctum');
 });
 
 Route::middleware('auth:sanctum')->group(function () {
