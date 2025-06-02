@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\ApiResponse;
+use App\Mail\SendAppreciation;
 use App\Mail\SendGreeting;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
@@ -38,6 +39,16 @@ class MailController extends Controller
 	{
 		try {
 			Mail::to(Auth::user())->send(new SendGreeting());
+			return ApiResponse::success();
+		} catch (\Throwable $th) {
+			return ApiResponse::internalServerError();
+		}
+	}
+
+	public function sendAppreciation()
+	{
+		try {
+			Mail::to(Auth::user())->send(new SendAppreciation());
 			return ApiResponse::success();
 		} catch (\Throwable $th) {
 			return ApiResponse::internalServerError();
