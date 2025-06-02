@@ -36,7 +36,7 @@ class PlaylistSeeder extends Seeder
 				'thumbnail' => '/' . $this->names[$i] . ' thumbnail.jpg',
 				'type' => 1,
 				'total_song' => 2,
-				'price' => 0,
+				'price' => 10000,
 				'created_at' => Carbon::now(),
 				'updated_at' => Carbon::now()
 			]);

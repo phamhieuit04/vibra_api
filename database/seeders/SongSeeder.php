@@ -44,7 +44,7 @@ class SongSeeder extends Seeder
 				'thumbnail' => '/default.jpg',
 				'total_played' => 0,
 				'status' => 1,
-				'price' => 0,
+				'price' => 10000,
 				'created_at' => Carbon::now(),
 				'updated_at' => Carbon::now()
 			]);
@@ -59,7 +59,7 @@ class SongSeeder extends Seeder
 				'thumbnail' => '/default.jpg',
 				'total_played' => 0,
 				'status' => 1,
-				'price' => 0,
+				'price' => 10000,
 				'created_at' => Carbon::now(),
 				'updated_at' => Carbon::now()
 			]);
@@ -74,7 +74,7 @@ class SongSeeder extends Seeder
 				'thumbnail' => '/default.jpg',
 				'total_played' => 0,
 				'status' => 1,
-				'price' => 0,
+				'price' => 10000,
 				'created_at' => Carbon::now(),
 				'updated_at' => Carbon::now()
 			]);
