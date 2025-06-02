@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Helpers\FileHelper;
 use Google\Client;
 use Google\Http\MediaFileUpload;
 use Google\Service\Drive;
@@ -59,7 +60,7 @@ class GoogleDriveService
 
 	/**
 	 * Support method for upload big file to Google Drive
-	 * 
+	 *
 	 * @param string $filePath
 	 * @param string $fileName
 	 * @param mixed $folderId
@@ -91,7 +92,7 @@ class GoogleDriveService
 			$status = false;
 			$handle = fopen($filePath, "rb");
 			while (!$status && !feof($handle)) {
-				$chunk = $self->readFileChunk($handle, $chunkSizeBytes);
+				$chunk = FileHelper::readFileChunk($handle, $chunkSizeBytes);
 				$status = $media->nextChunk($chunk);
 			}
 			$result = false;
@@ -106,30 +107,8 @@ class GoogleDriveService
 	}
 
 	/**
-	 * Support method for chunkFileUpload
-	 * 
-	 * @param mixed $handle
-	 * @param mixed $chunkSize
-	 * @return string
-	 */
-	function readFileChunk($handle, $chunkSize)
-	{
-		$byteCount = 0;
-		$giantChunk = "";
-		while (!feof($handle)) {
-			$chunk = fread($handle, 8192);
-			$byteCount += strlen($chunk);
-			$giantChunk .= $chunk;
-			if ($byteCount >= $chunkSize) {
-				return $giantChunk;
-			}
-		}
-		return $giantChunk;
-	}
-
-	/**
 	 * Service method to create folder in Google Drive.
-	 * 
+	 *
 	 * @param string $folderName 'name' of the folder to create in Google Drive
 	 */
 	public static function createFolder(string $folderName, $folderId = null)

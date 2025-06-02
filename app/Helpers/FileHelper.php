@@ -10,7 +10,8 @@ class FileHelper
 {
 	/**
 	 * Remove '@' and everything behind it, return clean email name
-	 * @param mixed $user
+	 *
+	 * @param mixed $user 'user' default = null
 	 * @return string
 	 */
 	public static function getNameFromEmail($user = null)
@@ -24,6 +25,7 @@ class FileHelper
 
 	/**
 	 * Get clean file name without it's extension
+	 *
 	 * @param mixed $file
 	 * @return string
 	 */
@@ -36,8 +38,9 @@ class FileHelper
 
 	/**
 	 * Store file in public folder
+	 *
 	 * @param mixed $file
-	 * @param string $location
+	 * @param string $location 'location' accepted 'songs' or 'lyrics' or 'avatars'
 	 * @return bool
 	 */
 	public static function store($file, string $location)
@@ -54,7 +57,8 @@ class FileHelper
 
 	/**
 	 * Get assets url, currently can get url from songs, lyrics, song's thumbnail
-	 * @param string $location
+	 *
+	 * @param string $location 'location' accepted 'songs' or 'lyrics' or 'thumbnails'
 	 * @param mixed $data
 	 * @return string|null
 	 */
@@ -79,6 +83,7 @@ class FileHelper
 
 	/**
 	 * Get lyrics from song
+	 *
 	 * @param mixed $song
 	 * @return string[]
 	 */
@@ -92,6 +97,7 @@ class FileHelper
 
 	/**
 	 * Get song's property url
+	 *
 	 * @param mixed $song
 	 * @return null
 	 */
@@ -115,6 +121,7 @@ class FileHelper
 
 	/**
 	 * Get user avatar url
+	 *
 	 * @param mixed $user
 	 * @return string
 	 */
@@ -128,8 +135,9 @@ class FileHelper
 	}
 
 	/**
-	 * Get thumbnail url
-	 * @param string $type
+	 * Get thumbnail url from 'playlist' or 'category'
+	 *
+	 * @param string $type 'type' accepted 'playlist' or 'category'
 	 * @param mixed $data
 	 * @return string|null
 	 */
@@ -152,6 +160,7 @@ class FileHelper
 
 	/**
 	 * Get all artists avatar url
+	 *
 	 * @param mixed $artists
 	 * @return null
 	 */
@@ -168,6 +177,7 @@ class FileHelper
 
 	/**
 	 * Get all songs's url
+	 *
 	 * @param mixed $songs
 	 * @return null
 	 */
@@ -193,6 +203,7 @@ class FileHelper
 
 	/**
 	 * Get all playlists's url
+	 *
 	 * @param mixed $playlists
 	 * @return null
 	 */
@@ -206,5 +217,28 @@ class FileHelper
 		} else {
 			return null;
 		}
+	}
+
+	/**
+	 * Read total file chunk
+	 * Usefull when working with uploading big file
+	 *
+	 * @param mixed $handle
+	 * @param mixed $chunkSize
+	 * @return string
+	 */
+	public static function readFileChunk($handle, $chunkSize)
+	{
+		$byteCount = 0;
+		$giantChunk = "";
+		while (!feof($handle)) {
+			$chunk = fread($handle, 8192);
+			$byteCount += strlen($chunk);
+			$giantChunk .= $chunk;
+			if ($byteCount >= $chunkSize) {
+				return $giantChunk;
+			}
+		}
+		return $giantChunk;
 	}
 }
