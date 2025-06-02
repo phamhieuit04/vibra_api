@@ -130,7 +130,7 @@ class ProfileController extends Controller
 			FileHelper::store($request->file('song'), 'songs');
 			FileHelper::store($request->file('lyric'), 'lyrics');
 			FileHelper::store($request->file('thumbnail'), 'thumbnails');
-			Song::insert([
+			$song = Song::create([
 				'name' => FileHelper::getFileName($request->file('song')),
 				'author_id' => Auth::user()->id,
 				'category_id' => $params['category-id'],
@@ -143,7 +143,7 @@ class ProfileController extends Controller
 				'created_at' => Carbon::now(),
 				'updated_at' => Carbon::now()
 			]);
-			return ApiResponse::success();
+			return ApiResponse::success($song);
 		} else {
 			return ApiResponse::dataNotfound();
 		}

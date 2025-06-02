@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Helpers\ApiResponse;
 use App\Helpers\FileHelper;
+use App\Models\Playlist;
+use App\Models\Song;
 use App\Models\User;
 use App\Services\GoogleDriveService;
 use Illuminate\Support\Facades\Auth;
@@ -12,48 +14,44 @@ use Illuminate\Support\Facades\Storage;
 
 class GoogleDriveController extends Controller
 {
-	public function syncAvatar()
+	public function syncFiles(Request $request)
 	{
+		$params = $request->all();
+		$type = $params['type'];
+		$songPath = "";
+
 		try {
 			$user = Auth::user();
 			$userName = FileHelper::getNameFromEmail($user);
-			$path = 'uploads/' . $userName . '/avatars' . $user->avatar;
 
-			$filePath = Storage::disk('public-api')->path($path);
-			if (!file_exists($filePath)) {
-				return ApiResponse::dataNotfound();
+			switch ($type) {
+				case 'avatars':
+					$songPath = 'uploads/' . $userName . '/avatars' . $user->avatar;
+					$fileName = substr($user->avatar, 1);
+					GoogleDriveService::syncFileToDrive($type, $songPath, $userName, $fileName);
+					break;
+				case 'songs':
+					$id = $params['id'];
+					$song = Song::where('id', $id)->with('author')->first();
+					$songPath = 'uploads/' . FileHelper::getNameFromEmail($song->author) . '/songs/' . $song->name . '.mp3';
+
+					$thumbnailPath = 'uploads/' . FileHelper::getNameFromEmail($song->author) . '/thumbnails/' . substr($song->thumbnail, 1);
+					$lyricsPath = 'uploads/' . FileHelper::getNameFromEmail($song->author) . '/lyrics/' . substr($song->lyrics, 1);
+
+					GoogleDriveService::syncFileToDrive($type, $songPath, $userName, $song->name);
+					GoogleDriveService::syncFileToDrive('thumbnails', $thumbnailPath, $userName, substr($song->thumbnail, 1));
+					GoogleDriveService::syncFileToDrive('lyrics', $lyricsPath, $userName, substr($song->lyrics, 1));
+					break;
+				case 'thumbnails':
+					$id = $params['id'];
+					$playlist = Playlist::where('id', $id)->with('author')->first();
+					$thumbnailPath = 'uploads/' . FileHelper::getNameFromEmail($playlist->author) . '/thumbnails' . $playlist->thumbnail;
+					$thumbnailName = substr($playlist->thumbnail, 1);
+					GoogleDriveService::syncFileToDrive($type, $thumbnailPath, $userName, $thumbnailName);
+				default:
+					break;
 			}
-
-			$userFolder = GoogleDriveService::findFolderByName($userName);
-			if (!$userFolder) {
-				$userFolderId = GoogleDriveService::createFolder($userName);
-			} else {
-				$userFolderId = is_object($userFolder) ? $userFolder->getId() : $userFolder['id'];
-			}
-
-			if (!$userFolderId) {
-				return ApiResponse::internalServerError();
-			}
-
-			$avatarsFolder = GoogleDriveService::findFolderByName('avatars', $userFolderId);
-			if (!$avatarsFolder) {
-				$avatarsFolderId = GoogleDriveService::createFolder('avatars', $userFolderId);
-			} else {
-				$avatarsFolderId = is_object($avatarsFolder) ? $avatarsFolder->getId() : $avatarsFolder['id'];
-			}
-
-			if (!$avatarsFolderId) {
-				return ApiResponse::internalServerError();
-			}
-
-			$fileName = substr($user->avatar, 1);
-			if (filesize($filePath) >= 5 * 1024 * 1024) {
-				GoogleDriveService::chunkFileUpload($filePath, $fileName, $avatarsFolderId);
-			} else {
-				GoogleDriveService::uploadSmallFile($filePath, $fileName, $avatarsFolderId);
-			}
-
-			return ApiResponse::success($userFolder);
+			return ApiResponse::success();
 		} catch (\Throwable $th) {
 			return ApiResponse::internalServerError();
 		}
