@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Helpers\ApiResponse;
 use App\Helpers\FileHelper;
 use Google\Client;
 use Google\Http\MediaFileUpload;
@@ -10,6 +11,7 @@ use Google\Service\Drive\DriveFile;
 use Google\Service\Exception;
 use Illuminate\Support\Facades\Log;
 use phpDocumentor\Reflection\Types\Self_;
+use Storage;
 
 class GoogleDriveService
 {
@@ -107,6 +109,57 @@ class GoogleDriveService
 	}
 
 	/**
+	 * Sync uploaded avatar, song, lyrics and thumbnail to Google drive
+	 * 
+	 * @param string $type
+	 * @param mixed $path
+	 * @param mixed $userName
+	 * @param mixed $fileName
+	 * @return bool|mixed|\Illuminate\Http\JsonResponse
+	 */
+	public static function syncFileToDrive(string $type, $path, $userName, $fileName)
+	{
+		try {
+			$filePath = Storage::disk('public-api')->path($path);
+			if (!file_exists($filePath)) {
+				return ApiResponse::dataNotfound();
+			}
+
+			$userFolder = self::findFolderByName($userName);
+			if (!$userFolder) {
+				$userFolderId = self::createFolder($userName);
+			} else {
+				$userFolderId = is_object($userFolder) ? $userFolder->getId() : $userFolder['id'];
+			}
+
+			if (!$userFolderId) {
+				return ApiResponse::internalServerError();
+			}
+
+			$typeFolder = self::findFolderByName($type, $userFolderId);
+			if (!$typeFolder) {
+				$typeFolderId = self::createFolder($type, $userFolderId);
+			} else {
+				$typeFolderId = is_object($typeFolder) ? $typeFolder->getId() : $typeFolder['id'];
+			}
+
+			if (!$typeFolderId) {
+				return ApiResponse::internalServerError();
+			}
+
+			// $fileName = substr($user->avatar, 1);
+			if (filesize($filePath) >= 5 * 1024 * 1024) {
+				self::chunkFileUpload($filePath, $fileName, $typeFolderId);
+			} else {
+				self::uploadSmallFile($filePath, $fileName, $typeFolderId);
+			}
+			return true;
+		} catch (\Throwable $th) {
+			return false;
+		}
+	}
+
+	/**
 	 * Service method to create folder in Google Drive.
 	 *
 	 * @param string $folderName 'name' of the folder to create in Google Drive
@@ -129,6 +182,13 @@ class GoogleDriveService
 		}
 	}
 
+	/**
+	 * Support method find folder in google drive by name
+	 * 
+	 * @param string $name
+	 * @param mixed $parentId
+	 * @return object|null
+	 */
 	public static function findFolderByName(string $name, $parentId = null)
 	{
 		try {
