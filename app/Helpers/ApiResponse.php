@@ -22,11 +22,11 @@ class ApiResponse
 		]);
 	}
 
-	public static function internalServerError()
+	public static function internalServerError($data = null)
 	{
 		return response()->json([
 			'code' => 500,
-			'data' => null,
+			'data' => $data,
 			'message' => 'Internal server error.'
 		]);
 	}
