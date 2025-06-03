@@ -13,6 +13,7 @@ class Bill extends Model
 
 	protected $fillable = [
 		'user_id',
+		'order_code',
 		'playlist_id',
 		'status',
 		'created_at',
