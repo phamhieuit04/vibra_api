@@ -13,10 +13,11 @@ use Illuminate\Support\Facades\Mail;
 
 class MailController extends Controller
 {
-	public function sendVerify()
+	public function sendVerify(Request $request)
 	{
+		$params = $request->all();
 		try {
-			event(new Registered(Auth::user()));
+			event(new Registered(User::find($params['id'])));
 			return ApiResponse::success();
 		} catch (\Throwable $th) {
 			return ApiResponse::internalServerError();
