@@ -17,6 +17,7 @@ namespace App\Models{
  *
  * @property int $id
  * @property int $user_id
+ * @property int $order_code
  * @property int|null $playlist_id
  * @property string $status
  * @property \Illuminate\Support\Carbon|null $created_at
@@ -26,6 +27,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|Bill query()
  * @method static \Illuminate\Database\Eloquent\Builder|Bill whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Bill whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Bill whereOrderCode($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Bill wherePlaylistId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Bill whereStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Bill whereUpdatedAt($value)
