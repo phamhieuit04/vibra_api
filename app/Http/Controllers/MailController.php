@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Helpers\ApiResponse;
 use App\Mail\SendAppreciation;
 use App\Mail\SendGreeting;
+use App\Models\Bill;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
@@ -47,10 +48,36 @@ class MailController extends Controller
 		}
 	}
 
-	public function sendAppreciation()
+	public function sendAppreciation(Request $request)
 	{
+		$params = $request->all();
+		$bill = Bill::findOrFail($params['id']);
+		$items = [];
 		try {
-			Mail::to(Auth::user())->send(new SendAppreciation());
+			if (is_null($bill->playlist_id)) {
+				$songs = Bill::where('bills.id', $bill->id)
+					->join('bill_details', 'bills.id', 'bill_details.bill_id')
+					->join('songs', 'songs.id', 'bill_details.song_id')
+					->first();
+				$items = [['name' => $songs->name, 'quantity' => 1, 'price' => $songs->price]];
+			} else {
+				$songs = Bill::where('bills.id', $bill->id)
+					->join('playlists', 'bills.playlist_id', 'playlists.id')
+					->join('songs', 'songs.playlist_id', 'playlists.id')
+					->get();
+				foreach ($songs as $song) {
+					array_push($items, [
+						'name' => $song->name,
+						'quantity' => 1,
+						'price' => $song->price
+					]);
+				}
+			}
+			$totalPrice = 0;
+			foreach ($items as $item) {
+				$totalPrice += $item['price'];
+			}
+			Mail::to(Auth::user())->send(new SendAppreciation($items, $totalPrice));
 			return ApiResponse::success();
 		} catch (\Throwable $th) {
 			return ApiResponse::internalServerError();

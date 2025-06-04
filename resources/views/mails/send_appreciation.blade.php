@@ -15,33 +15,37 @@
 		</div>
 		<div
 			style="background-color: #ffffff; padding: 30px; border-radius: 8px; box-shadow: 0 0 5px rgba(0,0,0,0.05); text-align: left;">
-			<h1 style="color: #1d1d1f;">Xin chào Hiếu</h1>
-			<h3 style="color: #1d1d1f;">Cảm ơn bạn đã hoàn tất thanh toán tại Vibra.</h3>
-			<p style="font-size: 16px; color: #333;">Chúng tôi rất vui khi được đồng hành cùng bạn trên hành trình khám
-				phá âm nhạc không giới hạn.</p>
+			<h1 style="color: #1d1d1f;">Xin chào {{ $user->name }},</h1>
+			<h2 style="color: #1d1d1f; text-align: justify;">Cảm ơn bạn đã hoàn tất thanh toán tại Vibra.</h2>
+			<p style="font-size: 16px; color: #333; text-align: justify;">Chúng tôi rất vui khi được đồng hành cùng bạn
+				trên hành trình khám phá âm nhạc không giới hạn.</p>
 			<p style="font-size: 16px; color: #333;">Hóa đơn chi tiết như sau:</p>
 
 			<table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
 				<thead>
 					<tr style="background-color: #f0f0f0;">
-						<th style="padding: 12px; border: 1px solid #ddd; text-align: left;">Mục</th>
+						<th style="padding: 12px; border: 1px solid #ddd; text-align: left;">Bài hát</th>
 						<th style="padding: 12px; border: 1px solid #ddd; text-align: right;">Số lượng</th>
 						<th style="padding: 12px; border: 1px solid #ddd; text-align: right;">Đơn giá</th>
 						<th style="padding: 12px; border: 1px solid #ddd; text-align: right;">Thành tiền</th>
 					</tr>
 				</thead>
 				<tbody>
-					<tr>
-						<td style="padding: 12px; border: 1px solid #ddd;">Gói Premium 1 tháng</td>
-						<td style="padding: 12px; border: 1px solid #ddd; text-align: right;">1</td>
-						<td style="padding: 12px; border: 1px solid #ddd; text-align: right;">49.000đ</td>
-						<td style="padding: 12px; border: 1px solid #ddd; text-align: right;">49.000đ</td>
-					</tr>
+					@foreach ($items as $item)
+						<tr>
+							<td style="padding: 12px; border: 1px solid #ddd;">{{ $item['name'] }}</td>
+							<td style="padding: 12px; border: 1px solid #ddd; text-align: right;">{{ $item['quantity'] }}
+							</td>
+							<td style="padding: 12px; border: 1px solid #ddd; text-align: right;">{{ $item['price'] }}</td>
+							<td style="padding: 12px; border: 1px solid #ddd; text-align: right;">{{ $item['price'] }}</td>
+						</tr>
+					@endforeach
 					<tr style="background-color: #f9f9f9;">
 						<td colspan="3"
 							style="padding: 12px; border: 1px solid #ddd; text-align: right; font-weight: bold;">Tổng
 							cộng</td>
-						<td style="padding: 12px; border: 1px solid #ddd; text-align: right; font-weight: bold;">49.000₫
+						<td style="padding: 12px; border: 1px solid #ddd; text-align: right; font-weight: bold;">
+							{{ $totalPrice }}
 						</td>
 					</tr>
 				</tbody>

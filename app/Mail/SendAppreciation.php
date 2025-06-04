@@ -15,12 +15,16 @@ class SendAppreciation extends Mailable
 {
 	use Queueable, SerializesModels;
 
+	private $items;
+	private $totalPrice;
+
 	/**
 	 * Create a new message instance.
 	 */
-	public function __construct()
+	public function __construct($items, $totalPrice)
 	{
-		//
+		$this->items = $items;
+		$this->totalPrice = $totalPrice;
 	}
 
 	/**
@@ -41,7 +45,9 @@ class SendAppreciation extends Mailable
 		return new Content(
 			view: 'mails.send_appreciation',
 			with: [
-				'user' => Auth::user()
+				'user' => Auth::user(),
+				'items' => $this->items,
+				'totalPrice' => $this->totalPrice
 			]
 		);
 	}

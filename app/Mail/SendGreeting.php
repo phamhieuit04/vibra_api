@@ -28,7 +28,7 @@ class SendGreeting extends Mailable
 	public function envelope(): Envelope
 	{
 		return new Envelope(
-			subject: 'Chào mừng bạn đến với [Vibra]! Âm nhạc đang chờ bạn khám phá!',
+			subject: 'Chào mừng bạn đến với Vibra - Âm nhạc đang chờ bạn khám phá!',
 		);
 	}
 
