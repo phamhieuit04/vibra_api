@@ -133,6 +133,7 @@ class ProfileController extends Controller
 			$song = Song::create([
 				'name' => FileHelper::getFileName($request->file('song')),
 				'author_id' => Auth::user()->id,
+				'playlist_id' => isset($params['playlist-id']) ? $params['playlist-id'] : null,
 				'category_id' => $params['category-id'],
 				'lyrics' => '/' . $request->file('lyric')->getClientOriginalName(),
 				'thumbnail' => '/' . $request->file('thumbnail')->getClientOriginalName(),
@@ -143,6 +144,11 @@ class ProfileController extends Controller
 				'created_at' => Carbon::now(),
 				'updated_at' => Carbon::now()
 			]);
+			if (isset($params['playlist-id'])) {
+				$playlist = Playlist::find($params['playlist-id']);
+				$playlist->total_song = $playlist->total_song + 1;
+				$playlist->save();
+			}
 			return ApiResponse::success($song);
 		} else {
 			return ApiResponse::dataNotfound();
