@@ -48,4 +48,13 @@ class ApiResponse
 			'message' => 'Forbidden'
 		]);
 	}
+
+	public static function unprocessableEntity()
+	{
+		return response()->json([
+			'code' => 422,
+			'data' => null,
+			'message' => 'Unprocessable Entity'
+		]);
+	}
 }

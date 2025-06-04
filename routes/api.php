@@ -33,13 +33,11 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/signup', [AuthController::class, 'signup']);
 
-// Firebase
 Route::group(['prefix' => 'firebase'], function () {
 	Route::get('/auth', [FirebaseController::class, 'authentication']);
 	Route::get('/notify-new-song', [FirebaseController::class, 'notifyNewSong'])->middleware('auth:sanctum');
 });
 
-// Send verify email
 Route::group(['prefix' => 'email'], function () {
 	Route::middleware('auth:sanctum')->group(function () {
 		Route::get('/send-greeting', [MailController::class, 'sendGreeting']);
