@@ -19,15 +19,16 @@ class PaymentController extends Controller
     {
         $params = $request->all();
         $now = Carbon::now();
+
         try {
             $newBill = Bill::create([
                 'user_id' => Auth::user()->id,
+                'order_code' => intval(substr(strval(microtime(true) * 10000), -6)),
                 'playlist_id' => isset($params['playlist_id']) ? $params['playlist_id'] : null,
                 'status' => 1,
                 'created_at' => $now,
                 'updated_at' => $now
             ]);
-
             // Check if user buy a playlist or a song only
             if (isset($params['playlist_id'])) {
                 // find songs in playlist
@@ -57,7 +58,12 @@ class PaymentController extends Controller
                 $newBill->total_price = $song->price;
             }
             $res = PayOSService::createPaymentLink($newBill);
-            return ApiResponse::success($res['checkoutUrl']);
+            if (!is_null($res)) {
+                $newBill->checkout_url = $res['checkoutUrl'];
+                return ApiResponse::success($newBill);
+            } else {
+                return ApiResponse::dataNotfound();
+            }
         } catch (\Throwable $th) {
             return ApiResponse::internalServerError();
         }

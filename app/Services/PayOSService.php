@@ -32,9 +32,9 @@ class PayOSService
 		$self = new self();
 		try {
 			$data = [
-				"orderCode" => $bill->id,
+				"orderCode" => $bill->order_code,
 				"amount" => $bill->total_price,
-				"description" => "Thanh toan hoa don " . $bill->id,
+				"description" => "Thanh toan hoa don " . $bill->order_code,
 				"returnUrl" => "http://localhost:5173/paysuccess",
 				"cancelUrl" => "http://localhost:5173/payfail",
 				"expiredAt" => Carbon::now()->addMinutes(10)->timestamp
