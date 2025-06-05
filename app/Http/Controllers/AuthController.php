@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Helpers\ApiResponse;
 use App\Helpers\FileHelper;
-use App\Http\Resources\AuthResource;
 use App\Models\DeviceToken;
 use App\Models\User;
 use App\Notifications\VerifyEmail;

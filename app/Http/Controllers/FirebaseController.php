@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Helpers\ApiResponse;
 use App\Helpers\FileHelper;
-use App\Http\Resources\AuthResource;
 use App\Models\DeviceToken;
 use App\Models\Library;
 use App\Models\Song;
@@ -90,7 +89,9 @@ class FirebaseController extends Controller
 
 		try {
 			$users = User::withWhereHas('deviceTokens')
-				->withWhereHas('userLibraries')
+				->withWhereHas('userLibraries', function ($query) use ($artist) {
+					$query->where('artist_id', $artist->id);
+				})
 				->get();
 			$device_tokens = collect([]);
 			$users->each(function ($user) use ($device_tokens) {
