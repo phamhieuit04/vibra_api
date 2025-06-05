@@ -129,8 +129,7 @@ class LibraryController extends Controller
 				$playlist->thumbnail = '/' . $file->getClientOriginalName();
 				FileHelper::store($file, 'thumbnails');
 			}
-			$playlist->updated_at = Carbon::now();
-			$playlist->save();
+			$playlist->touch();
 			return ApiResponse::success();
 		} catch (\Throwable $th) {
 			return ApiResponse::dataNotfound();

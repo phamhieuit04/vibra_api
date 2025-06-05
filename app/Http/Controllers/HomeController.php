@@ -102,19 +102,16 @@ class HomeController extends Controller
 	 */
 	public function store(Request $request, $id)
 	{
-		// Add album to library
-		$params = $request->all();
-		$now = Carbon::now();
 		try {
-			$library = new Library();
-			$library->user_id = Auth::user()->id;
-			$library->playlist_id = $id;
-			$library->created_at = $now;
-			$library->updated_at = $now;
-			$library->save();
+			Library::insert([
+				'user_id' => Auth::user()->id,
+				'playlist_id' => $id,
+				'created_at' => Carbon::now(),
+				'updated_at' => Carbon::now()
+			]);
 			return ApiResponse::success();
 		} catch (\Throwable $th) {
-			return ApiResponse::dataNotfound();
+			return ApiResponse::internalServerError();
 		}
 	}
 

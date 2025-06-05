@@ -105,8 +105,8 @@ Route::middleware('auth:sanctum')->group(function () {
 		Route::get('/list-song', [ProfileController::class, 'listSong']);
 		Route::get('/create-album', [ProfileController::class, 'createAlbum']);
 		Route::post('/update-album/{id}', [ProfileController::class, 'updateAlbum']);
-		Route::post('upload-song', [ProfileController::class, 'uploadSong']);
-		Route::get('payment-history', [ProfileController::class, 'getPaymentHistory']);
+		Route::post('/upload-song', [ProfileController::class, 'uploadSong']);
+		Route::get('/payment-history', [ProfileController::class, 'getPaymentHistory']);
 	});
 
 	Route::group(['prefix' => 'payment'], function () {

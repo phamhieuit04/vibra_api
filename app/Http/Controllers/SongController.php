@@ -60,14 +60,14 @@ class SongController extends Controller
 	{
 		$params = $request->all();
 		if (isset($params['song_id']) && isset($params['playlist_id'])) {
-			Library::create([
+			Library::insert([
 				'user_id' => Auth::user()->id,
 				'playlist_id' => $params['playlist_id'],
 				'song_id' => $params['song_id'],
 			]);
 			$playlist = Playlist::find($params['playlist_id']);
 			$playlist->total_song = $playlist->total_song + 1;
-			$playlist->save();
+			$playlist->touch();
 			return ApiResponse::success();
 		} else {
 			return ApiResponse::internalServerError();
@@ -79,7 +79,7 @@ class SongController extends Controller
 		try {
 			$song = Song::find($id);
 			$song->total_played = $song->total_played + 1;
-			$song->save();
+			$song->touch();
 			return ApiResponse::success();
 		} catch (\Throwable $th) {
 			return ApiResponse::internalServerError();
@@ -100,12 +100,12 @@ class SongController extends Controller
 				->where('song_id', $params['song_id'])
 				->delete();
 			DB::commit();
-
 			$playlist = Playlist::find($params['playlist_id']);
 			$playlist->total_song = $playlist->total_song - 1;
-			$playlist->save();
+			$playlist->touch();
 			return ApiResponse::success();
 		} catch (\Throwable $th) {
+			DB::rollBack();
 			return ApiResponse::internalServerError();
 		}
 	}

@@ -62,7 +62,6 @@ class ProfileController extends Controller
 				'gender' => isset($params['gender']) ? $params['gender'] : $user->gender,
 				'birth' => isset($params['birth']) ? $params['birth'] : $user->birth,
 				'description' => isset($params['description']) ? $params['description'] : $user->description,
-				'updated_at' => Carbon::now()
 			]);
 			if ($request->hasFile('avatar')) {
 				$file = $request->file('avatar');
@@ -70,7 +69,7 @@ class ProfileController extends Controller
 					$user->avatar = '/' . $file->getClientOriginalName();
 				}
 			}
-			$user->save();
+			$user->touch();
 			return ApiResponse::success();
 		} catch (\Throwable $th) {
 			return ApiResponse::internalServerError();
@@ -115,7 +114,6 @@ class ProfileController extends Controller
 			'name' => isset($params['name']) ? $params['name'] : $playlist->name,
 			'description' => isset($params['description']) ? $params['description'] : $playlist->description,
 			'price' => isset($params['price']) ? $params['price'] : $playlist->price,
-			'updated_at' => Carbon::now()
 		]);
 		if ($request->hasFile('thumbnail')) {
 			$file = $request->file('thumbnail');
@@ -123,7 +121,7 @@ class ProfileController extends Controller
 				$playlist->thumbnail = '/' . $file->getClientOriginalName();
 			}
 		}
-		$playlist->save();
+		$playlist->touch();
 		$playlist->thumbnail_path = FileHelper::getThumbnail('playlist', $playlist);
 		return ApiResponse::success($playlist);
 	}
@@ -152,7 +150,7 @@ class ProfileController extends Controller
 			if (isset($params['playlist-id'])) {
 				$playlist = Playlist::find($params['playlist-id']);
 				$playlist->total_song = $playlist->total_song + 1;
-				$playlist->save();
+				$playlist->touch();
 			}
 			return ApiResponse::success($song);
 		} else {

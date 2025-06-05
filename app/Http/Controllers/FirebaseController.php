@@ -30,7 +30,7 @@ class FirebaseController extends Controller
 				if (!is_null($user)) {
 					if (is_null($user->email_verified_at)) {
 						$user->email_verified_at = Carbon::now();
-						$user->save();
+						$user->touch();
 					}
 					$user->token = $user->createToken($user->email)->plainTextToken;
 					$user->device_token = $params['device_token'];
