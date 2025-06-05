@@ -15,8 +15,7 @@ return new class extends Migration {
 			$table->string('name');
 			$table->string('description')->nullable();
 			$table->foreignId('author_id')->constrained('users', 'id');
-			$table->unsignedBigInteger('playlist_id')->nullable();
-			$table->foreign('playlist_id')->references('id')->on('playlists');
+			$table->foreignId('playlist_id')->constrained('playlists', 'id');
 			$table->foreignId('category_id')->constrained('categories', 'id');
 			$table->string('lyrics');
 			$table->string('thumbnail');

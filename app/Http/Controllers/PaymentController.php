@@ -95,4 +95,16 @@ class PaymentController extends Controller
             return ApiResponse::internalServerError();
         }
     }
+
+    public function updateStatus(Request $request, $id)
+    {
+        try {
+            $bill = Bill::find($id);
+            $bill->status = 2;
+            $bill->touch();
+            return ApiResponse::success();
+        } catch (\Throwable $th) {
+            return ApiResponse::internalServerError();
+        }
+    }
 }

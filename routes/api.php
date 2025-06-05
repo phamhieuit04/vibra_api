@@ -111,6 +111,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
 	Route::group(['prefix' => 'payment'], function () {
 		Route::get('/create-bill', [PaymentController::class, 'createBill']);
+		Route::get('/update-status/{id}', [PaymentController::class, 'updateStatus']);
 	});
 
 	Route::group(['prefix' => 'google-drive'], function () {
