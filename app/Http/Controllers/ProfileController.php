@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Helpers\ApiResponse;
 use App\Helpers\FileHelper;
+use App\Models\Bill;
 use App\Models\Playlist;
 use App\Models\Song;
 use App\Models\User;
@@ -165,6 +166,31 @@ class ProfileController extends Controller
 			$songs = Song::where('author_id', Auth::user()->id)->get();
 			FileHelper::getSongsUrl($songs);
 			return ApiResponse::success($songs);
+		} catch (\Throwable $th) {
+			return ApiResponse::dataNotfound();
+		}
+	}
+
+	public function getPaymentHistory()
+	{
+		$bills = Bill::where('user_id', Auth::user()->id)->get();
+		try {
+			$bills->each(function ($bill) {
+				if (is_null($bill->playlist_id)) {
+					$song = Bill::where('bills.id', $bill->id)
+						->join('bill_details', 'bills.id', 'bill_details.bill_id')
+						->join('songs', 'songs.id', 'bill_details.song_id')
+						->first();
+					$bill->song = ['name' => $song->name, 'quantity' => 1, 'price' => $song->price];
+				} else {
+					Bill::where('bills.id', $bill->id)
+						->join('playlists', 'bills.playlist_id', 'playlists.id')
+						->get()->each(function ($_bill) use ($bill) {
+							$bill->playlist = ['name' => $_bill->name, 'quantity' => 1, 'price' => $_bill->price];
+						});
+				}
+			});
+			return ApiResponse::success($bills);
 		} catch (\Throwable $th) {
 			return ApiResponse::dataNotfound();
 		}
