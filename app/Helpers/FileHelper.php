@@ -40,7 +40,7 @@ class FileHelper
 	 * Store file in public folder
 	 *
 	 * @param mixed $file
-	 * @param string $location 'location' accepted 'songs' or 'lyrics' or 'avatars'
+	 * @param string $location 'location' accepted 'songs' or 'lyrics' or 'avatars' or 'thumbnails'
 	 * @return bool
 	 */
 	public static function store($file, string $location)

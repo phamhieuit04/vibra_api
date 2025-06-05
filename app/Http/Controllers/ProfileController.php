@@ -113,12 +113,16 @@ class ProfileController extends Controller
 		$playlist->update([
 			'name' => isset($params['name']) ? $params['name'] : $playlist->name,
 			'description' => isset($params['description']) ? $params['description'] : $playlist->description,
-			'thumbnail' => isset($params['thumbnail']) ? $params['thumbnail'] : $playlist->thumbnail,
 			'price' => isset($params['price']) ? $params['price'] : $playlist->price,
 			'updated_at' => Carbon::now()
 		]);
+		if ($request->hasFile('thumbnail')) {
+			$file = $request->file('thumbnail');
+			if (FileHelper::store($file, 'thumbnails')) {
+				$playlist->thumbnail = '/' . $file->getClientOriginalName();
+			}
+		}
 		$playlist->save();
-
 		$playlist->thumbnail_path = FileHelper::getThumbnail('playlist', $playlist);
 		return ApiResponse::success($playlist);
 	}
@@ -140,7 +144,7 @@ class ProfileController extends Controller
 				'description' => $params['description'],
 				'total_played' => 0,
 				'status' => 1,
-				'price' => 0,
+				'price' => $params['price'],
 				'created_at' => Carbon::now(),
 				'updated_at' => Carbon::now()
 			]);
