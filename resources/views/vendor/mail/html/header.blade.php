@@ -1,9 +1,8 @@
 @props(['url'])
 <tr>
 	<td class="header">
-		<a href="{{ $url }}" style="display: inline-block;">
-			<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/19/Spotify_logo_without_text.svg/2048px-Spotify_logo_without_text.svg.png"
-				class="logo" alt="Spotify Logo">
-		</a>
+		<div style="text-align: center; margin-bottom: 30px;">
+			<img src="https://i.postimg.cc/yNV2N2L2/MyLogo.png" alt="Vibra Logo" style="width: 80px;">
+		</div>
 	</td>
 </tr>

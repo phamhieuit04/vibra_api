@@ -10,8 +10,7 @@
 <body style="margin: 0; padding: 0; background-color: #eef3f8; font-family: Arial, sans-serif;">
 	<div style="max-width: 600px; margin: 0 auto; padding: 40px 20px;">
 		<div style="text-align: center; margin-bottom: 30px;">
-			<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/19/Spotify_logo_without_text.svg/2048px-Spotify_logo_without_text.svg.png"
-				alt="Vibra Logo" style="width: 50px;">
+			<img src="https://i.postimg.cc/yNV2N2L2/MyLogo.png" alt="Vibra Logo" style="width: 80px;">
 		</div>
 		<div
 			style="background-color: #ffffff; padding: 30px; border-radius: 8px; box-shadow: 0 0 5px rgba(0,0,0,0.05); text-align: left;">
