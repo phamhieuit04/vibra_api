@@ -40,6 +40,7 @@ class SongSeeder extends Seeder
 				'author_id' => 1,
 				'playlist_id' => 1,
 				'category_id' => rand(1, 10),
+				'description' => $this->descriptions[$i],
 				'lyrics' => '/default.txt',
 				'thumbnail' => '/default.jpg',
 				'total_played' => 0,
@@ -55,6 +56,7 @@ class SongSeeder extends Seeder
 				'author_id' => 2,
 				'playlist_id' => 2,
 				'category_id' => rand(1, 10),
+				'description' => $this->descriptions[$i],
 				'lyrics' => '/default.txt',
 				'thumbnail' => '/default.jpg',
 				'total_played' => 0,
@@ -70,6 +72,7 @@ class SongSeeder extends Seeder
 				'author_id' => 3,
 				'playlist_id' => 3,
 				'category_id' => rand(1, 10),
+				'description' => $this->descriptions[$i],
 				'lyrics' => '/default.txt',
 				'thumbnail' => '/default.jpg',
 				'total_played' => 0,
@@ -84,8 +87,7 @@ class SongSeeder extends Seeder
 			$song = Song::find($i + 1);
 			$song->thumbnail = '/' . $this->names[$i] . " thumbnail.jpg";
 			$song->lyrics = '/' . $this->names[$i] . " lyrics.txt";
-			$song->description = $this->descriptions[$i];
-			$song->save();
+			$song->touch();
 		}
 	}
 }
