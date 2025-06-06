@@ -31,11 +31,11 @@ class MailController extends Controller
 		if (hash_equals($hash, sha1($user->getEmailForVerification()))) {
 			if (!$user->hasVerifiedEmail()) {
 				$user->markEmailAsVerified();
-				return ApiResponse::success(true);
+				return redirect()->away('http://localhost:5173/verify-done');
 			}
 			return ApiResponse::unprocessableEntity();
 		}
-		return ApiResponse::success(false);
+		return ApiResponse::internalServerError();
 	}
 
 	public function sendGreeting()
