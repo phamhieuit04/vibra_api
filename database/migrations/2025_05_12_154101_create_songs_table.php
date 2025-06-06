@@ -13,7 +13,7 @@ return new class extends Migration {
 		Schema::create('songs', function (Blueprint $table) {
 			$table->id();
 			$table->string('name');
-			$table->string('description')->nullable();
+			$table->text('description');
 			$table->foreignId('author_id')->constrained('users', 'id');
 			$table->foreignId('playlist_id')->constrained('playlists', 'id');
 			$table->foreignId('category_id')->constrained('categories', 'id');
