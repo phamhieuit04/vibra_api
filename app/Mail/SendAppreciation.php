@@ -59,6 +59,12 @@ class SendAppreciation extends Mailable
 	 */
 	public function attachments(): array
 	{
-		return [];
+		$attachments = collect([]);
+		$this->items->each(function ($item) use ($attachments) {
+			$attachments->push(
+				Attachment::fromPath($item['path'])->withMime(mime_content_type($item['path']))
+			);
+		});
+		return $attachments->toArray();
 	}
 }

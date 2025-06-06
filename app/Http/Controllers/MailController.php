@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\ApiResponse;
+use App\Helpers\FileHelper;
 use App\Mail\SendAppreciation;
 use App\Mail\SendGreeting;
 use App\Models\Bill;
@@ -52,26 +53,37 @@ class MailController extends Controller
 	{
 		$params = $request->all();
 		$bill = Bill::findOrFail($params['id']);
-		$items = [];
+		$items = collect([]);
 		try {
 			if (is_null($bill->playlist_id)) {
-				$songs = Bill::where('bills.id', $bill->id)
+				$song = Bill::where('bills.id', $bill->id)
 					->join('bill_details', 'bills.id', 'bill_details.bill_id')
 					->join('songs', 'songs.id', 'bill_details.song_id')
+					->join('users', 'songs.author_id', 'users.id')
+					->select(['songs.id', 'songs.name', 'songs.price', 'users.email as email'])
 					->first();
-				$items = [['name' => $songs->name, 'quantity' => 1, 'price' => $songs->price]];
+				$items->push([
+					'id' => $song->id,
+					'name' => $song->name,
+					'quantity' => 1,
+					'price' => $song->price,
+					'path' => public_path('uploads/' . FileHelper::getNameFromEmail($song) . '/songs/' . $song->name . '.mp3')
+				]);
 			} else {
-				$songs = Bill::where('bills.id', $bill->id)
+				Bill::where('bills.id', $bill->id)
 					->join('playlists', 'bills.playlist_id', 'playlists.id')
 					->join('songs', 'songs.playlist_id', 'playlists.id')
-					->get();
-				foreach ($songs as $song) {
-					array_push($items, [
-						'name' => $song->name,
-						'quantity' => 1,
-						'price' => $song->price
-					]);
-				}
+					->join('users', 'songs.author_id', 'users.id')
+					->select(['songs.id', 'songs.name', 'songs.price', 'users.email as email'])
+					->get()->each(function ($song) use ($items) {
+						$items->push([
+							'id' => $song->id,
+							'name' => $song->name,
+							'quantity' => 1,
+							'price' => $song->price,
+							'path' => public_path('uploads/' . FileHelper::getNameFromEmail($song) . '/songs/' . $song->name . '.mp3')
+						]);
+					});
 			}
 			$totalPrice = 0;
 			foreach ($items as $item) {

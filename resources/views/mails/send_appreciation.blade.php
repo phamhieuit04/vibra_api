@@ -14,7 +14,7 @@
 		</div>
 		<div
 			style="background-color: #ffffff; padding: 30px; border-radius: 8px; box-shadow: 0 0 5px rgba(0,0,0,0.05); text-align: left;">
-			<h1 style="color: #1d1d1f;">Xin chào {{ $user->name }},</h1>
+			<h1 style="color: #1d1d1f;">Xin chào {{ $user?->name }},</h1>
 			<h2 style="color: #1d1d1f; text-align: justify;">Cảm ơn bạn đã hoàn tất thanh toán tại Vibra.</h2>
 			<p style="font-size: 16px; color: #333; text-align: justify;">Chúng tôi rất vui khi được đồng hành cùng bạn
 				trên hành trình khám phá âm nhạc không giới hạn.</p>
@@ -44,7 +44,7 @@
 							style="padding: 12px; border: 1px solid #ddd; text-align: right; font-weight: bold;">Tổng
 							cộng</td>
 						<td style="padding: 12px; border: 1px solid #ddd; text-align: right; font-weight: bold;">
-							{{ $totalPrice }}
+							{{ !is_null($totalPrice) ? $totalPrice : 0  }}
 						</td>
 					</tr>
 				</tbody>
