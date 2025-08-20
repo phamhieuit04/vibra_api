@@ -7,18 +7,18 @@ use Illuminate\Database\Eloquent\Model;
 
 class Category extends Model
 {
-	use HasFactory;
+    use HasFactory;
 
-	protected $table = 'categories';
+    protected $table = 'categories';
 
-	protected $fillable = [
-		'name',
-		'description',
-		'thumbnail',
-	];
+    protected $fillable = [
+        'name',
+        'description',
+        'thumbnail',
+    ];
 
-	protected $cast = [
-		'created_at' => 'timestamp',
-		'updated_at' => 'timestamp'
-	];
+    protected $cast = [
+        'created_at' => 'timestamp',
+        'updated_at' => 'timestamp'
+    ];
 }

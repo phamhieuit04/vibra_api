@@ -7,19 +7,19 @@ use Illuminate\Database\Eloquent\Model;
 
 class BillDetail extends Model
 {
-	use HasFactory;
+    use HasFactory;
 
-	protected $table = 'bill_details';
+    protected $table = 'bill_details';
 
-	protected $fillable = [
-		'bill_id',
-		'song_id',
-		'created_at',
-		'updated_at'
-	];
+    protected $fillable = [
+        'bill_id',
+        'song_id',
+        'created_at',
+        'updated_at'
+    ];
 
-	protected $cast = [
-		'created_at' => 'timestamp',
-		'updated_at' => 'timestamp'
-	];
+    protected $cast = [
+        'created_at' => 'timestamp',
+        'updated_at' => 'timestamp'
+    ];
 }
