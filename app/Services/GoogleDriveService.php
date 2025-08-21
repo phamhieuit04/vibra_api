@@ -8,7 +8,8 @@ use Google\Client;
 use Google\Http\MediaFileUpload;
 use Google\Service\Drive;
 use Google\Service\Drive\DriveFile;
-use Storage;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 class GoogleDriveService
 {
@@ -54,7 +55,9 @@ class GoogleDriveService
             ]);
 
             return $file->id;
-        } catch (\Exception $e) {
+        } catch (\Throwable $th) {
+            Log::error($th);
+
             return false;
         }
     }
@@ -104,6 +107,8 @@ class GoogleDriveService
 
             return true;
         } catch (\Throwable $th) {
+            Log::error($th);
+
             return false;
         }
     }
@@ -147,7 +152,6 @@ class GoogleDriveService
                 return ApiResponse::internalServerError();
             }
 
-            // $fileName = substr($user->avatar, 1);
             if (filesize($filePath) >= 5 * 1024 * 1024) {
                 self::chunkFileUpload($filePath, $fileName, $typeFolderId);
             } else {
@@ -156,6 +160,8 @@ class GoogleDriveService
 
             return true;
         } catch (\Throwable $th) {
+            Log::error($th);
+
             return false;
         }
     }
@@ -180,6 +186,8 @@ class GoogleDriveService
 
             return $folder->id;
         } catch (\Throwable $th) {
+            Log::error($th);
+
             return false;
         }
     }
@@ -226,7 +234,7 @@ class GoogleDriveService
             return null;
 
         } catch (\Throwable $th) {
-            echo 'Error: ' . $th->getMessage();
+            Log::error($th);
 
             return null;
         }
