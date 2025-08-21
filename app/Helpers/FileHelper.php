@@ -3,7 +3,9 @@
 namespace App\Helpers;
 
 use App\Models\User;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
 class FileHelper
@@ -44,18 +46,28 @@ class FileHelper
      * @param string $location 'location' accepted 'songs' or 'lyrics' or 'avatars' or 'thumbnails'
      * @return bool
      */
-    public static function store($file, string $location)
+    public static function store(UploadedFile $file, string $location)
     {
-        if (!is_null($file)) {
-            if ($location === 'songs' || $location === 'lyrics' || $location === 'thumbnails' || $location === 'avatars') {
-                $fullPath = 'uploads/' . self::getNameFromEmail() . '/' . $location;
-                $file->storeAs($fullPath, $file->getClientOriginalName(), ['disk' => 'public-api']);
-
-                return true;
+        try {
+            if (is_null($file)) {
+                return false;
             }
-        }
+            if ($location != 'songs' &&
+                $location != 'lyrics' &&
+                $location != 'thumbnails' &&
+                $location != 'avatars') {
+                return false;
+            }
+            $fullPath = 'uploads/' . self::getNameFromEmail() . '/' . $location;
+            $targetPath = public_path($fullPath . '/' . $file->getClientOriginalName());
+            $file->move(dirname($targetPath), basename($targetPath));
 
-        return false;
+            return true;
+        } catch (\Throwable $th) {
+            Log::error($th);
+
+            return false;
+        }
     }
 
     /**
