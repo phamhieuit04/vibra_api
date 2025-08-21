@@ -11,6 +11,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class ProfileController extends Controller
 {
@@ -134,33 +135,43 @@ class ProfileController extends Controller
     public function uploadSong(Request $request)
     {
         $params = $request->all();
-        if ($request->hasFile('song') && $request->hasFile('lyric') && $request->hasFile('thumbnail')) {
-            FileHelper::store($request->file('song'), 'songs');
-            FileHelper::store($request->file('lyric'), 'lyrics');
-            FileHelper::store($request->file('thumbnail'), 'thumbnails');
-            $song = Song::create([
-                'name'         => FileHelper::getFileName($request->file('song')),
-                'author_id'    => Auth::user()->id,
-                'playlist_id'  => isset($params['playlist-id']) ? $params['playlist-id'] : null,
-                'category_id'  => $params['category-id'],
-                'lyrics'       => '/' . $request->file('lyric')->getClientOriginalName(),
-                'thumbnail'    => '/' . $request->file('thumbnail')->getClientOriginalName(),
-                'description'  => $params['description'],
-                'total_played' => 0,
-                'status'       => 1,
-                'price'        => $params['price'],
-                'created_at'   => Carbon::now(),
-                'updated_at'   => Carbon::now()
-            ]);
-            if (isset($params['playlist-id'])) {
-                $playlist = Playlist::find($params['playlist-id']);
-                $playlist->total_song = $playlist->total_song + 1;
-                $playlist->touch();
+        try {
+            if (!$request->hasFile('song') &&
+                !$request->hasFile('lyric') &&
+                !$request->hasFile('thumbnail')) {
+                return ApiResponse::dataNotfound();
+            }
+            if (FileHelper::store($request->file('song'), 'songs') &&
+                FileHelper::store($request->file('lyric'), 'lyrics') &&
+                FileHelper::store($request->file('thumbnail'), 'thumbnails')) {
+                $song = Song::create([
+                    'name'         => FileHelper::getFileName($request->file('song')),
+                    'author_id'    => Auth::user()->id,
+                    'playlist_id'  => isset($params['playlist-id']) ? $params['playlist-id'] : null,
+                    'category_id'  => $params['category-id'],
+                    'lyrics'       => '/' . $request->file('lyric')->getClientOriginalName(),
+                    'thumbnail'    => '/' . $request->file('thumbnail')->getClientOriginalName(),
+                    'description'  => $params['description'],
+                    'total_played' => 0,
+                    'status'       => 1,
+                    'price'        => $params['price'],
+                    'created_at'   => Carbon::now(),
+                    'updated_at'   => Carbon::now()
+                ]);
+                if (isset($params['playlist-id'])) {
+                    $playlist = Playlist::find($params['playlist-id']);
+                    $playlist->total_song = $playlist->total_song + 1;
+                    $playlist->touch();
+                }
+
+                return ApiResponse::success($song);
             }
 
-            return ApiResponse::success($song);
-        } else {
-            return ApiResponse::dataNotfound();
+            return ApiResponse::internalServerError();
+        } catch (\Throwable $th) {
+            Log::error($th);
+
+            return ApiResponse::internalServerError();
         }
     }
 
